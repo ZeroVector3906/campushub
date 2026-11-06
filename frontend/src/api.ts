@@ -13,5 +13,5 @@ export async function run(task:()=>Promise<unknown>,success?:string){try{await t
 export async function downloadReport(type:string){
   const res=await fetch('/api/admin/reports/export?type='+encodeURIComponent(type),{credentials:'same-origin'})
   if(!res.ok){ElMessage.error('报表下载失败，请确认管理员登录状态');return}
-  const url=URL.createObjectURL(await res.blob());const link=document.createElement('a');link.href=url;link.download=`CampusHub-${type}-${new Date().toISOString().slice(0,10)}.csv`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000)
+  const url=URL.createObjectURL(await res.blob());const link=document.createElement('a');link.href=url;link.download=`征途单车俱乐部-${type}-${new Date().toISOString().slice(0,10)}.csv`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000)
 }

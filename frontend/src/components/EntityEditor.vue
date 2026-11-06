@@ -4,21 +4,21 @@ const props=defineProps<{kind:'clubs'|'activities'|'equipment';item:Row|null;clu
 type Field={key:string;label:string;type?:string;options?:{label:string;value:any}[];min?:number;max?:number;required?:boolean}
 const names={clubs:'社团',activities:'活动',equipment:'器材'}
 const options=(values:string[])=>values.map(v=>({label:v,value:v}))
-const categories=options(['文化艺术','体育运动','学术科技','公益实践'])
+const categories=options([...new Set(['骑行运动','骑行训练','休闲骑行','技能交流','志愿服务',...state.clubs.map(c=>c.category),...state.activities.map(a=>a.category)])])
 const fields=computed<Field[]>(()=>props.kind==='clubs'?[
  {key:'name',label:'社团名称',max:80},{key:'category',label:'社团分类',type:'select',options:categories},{key:'summary',label:'一句话介绍',max:160},{key:'description',label:'社团详细介绍',type:'textarea',max:10000},
- {key:'icon',label:'社团图标',type:'select',options:[{label:'摄影',value:'camera'},{label:'户外',value:'mountain'},{label:'音乐',value:'music'},{label:'编程',value:'code'},{label:'公益',value:'heart'},{label:'运动',value:'racket'},{label:'读书',value:'book'},{label:'创新',value:'sparkles'}]},
+ {key:'icon',label:'社团图标',type:'select',options:[{label:'单车骑行',value:'bike'},{label:'摄影',value:'camera'},{label:'户外',value:'mountain'},{label:'音乐',value:'music'},{label:'编程',value:'code'},{label:'公益',value:'heart'},{label:'运动',value:'racket'},{label:'读书',value:'book'},{label:'创新',value:'sparkles'}]},
  {key:'color',label:'主题颜色',type:'color'},{key:'location',label:'活动地点',max:100},{key:'contact',label:'联系方式',max:100},{key:'recruiting',label:'开放招新',type:'switch',required:false},{key:'active',label:'正常运营（关闭后归档）',type:'switch',required:false}
 ]:props.kind==='activities'?[
  {key:'title',label:'活动名称',max:120},{key:'clubId',label:'主办社团',type:'select',options:props.clubs.filter(c=>c.active).map(c=>({label:c.name,value:c.id}))},{key:'category',label:'活动分类',type:'select',options:categories},
  {key:'description',label:'活动介绍',type:'textarea',max:10000},{key:'location',label:'活动地点',max:120},{key:'startsAt',label:'开始时间',type:'datetime'},{key:'endsAt',label:'结束时间',type:'datetime'},{key:'registrationDeadline',label:'报名截止时间',type:'datetime'},
  {key:'capacity',label:'报名名额',type:'number',min:1,max:10000},{key:'checkinCode',label:'现场签到码（4–32 位，仅管理员可见）',max:32},{key:'featured',label:'首页推荐',type:'switch',required:false},{key:'status',label:'活动状态',type:'select',options:[{label:'已发布',value:'PUBLISHED'},{label:'已取消',value:'CANCELLED'}]}
 ]:[
- {key:'name',label:'器材名称',max:100},{key:'assetCode',label:'资产编号',max:50},{key:'category',label:'器材分类',type:'select',options:options([...new Set(['摄影器材','户外装备','活动设备','运动器材',...state.equipment.map(e=>e.category)])])},
+ {key:'name',label:'器材名称',max:100},{key:'assetCode',label:'资产编号',max:50},{key:'category',label:'器材分类',type:'select',options:options([...new Set(['单车','骑行装备','维修工具',...state.equipment.map(e=>e.category)])])},
  {key:'description',label:'器材与配件说明',type:'textarea',max:1000},{key:'location',label:'存放地点',max:100},{key:'totalQuantity',label:'总库存（在借数量自动保留）',type:'number',min:0,max:100000},{key:'active',label:'允许借用',type:'switch',required:false}
 ])
 const next=new Date(Date.now()+7*86400000).toISOString(),end=new Date(Date.now()+7*86400000+7200000).toISOString(),deadline=new Date(Date.now()+6*86400000).toISOString()
-const form=reactive<Row>({name:'',category:props.kind==='equipment'?'活动设备':'文化艺术',summary:'',description:'',icon:'sparkles',color:'#547D6A',location:'',contact:'',recruiting:true,active:true,clubId:props.clubs.find(c=>c.active)?.id,title:'',startsAt:localInput(next),endsAt:localInput(end),registrationDeadline:localInput(deadline),capacity:30,checkinCode:'',featured:false,status:'PUBLISHED',assetCode:'',totalQuantity:1,...props.item})
+const form=reactive<Row>({name:'',category:props.kind==='equipment'?'骑行装备':'骑行运动',summary:'',description:'',icon:'bike',color:'#547D6A',location:'',contact:'',recruiting:true,active:true,clubId:props.clubs.find(c=>c.active)?.id,title:'',startsAt:localInput(next),endsAt:localInput(end),registrationDeadline:localInput(deadline),capacity:30,checkinCode:'',featured:false,status:'PUBLISHED',assetCode:'',totalQuantity:1,...props.item})
 if(props.item&&props.kind==='activities')for(const key of ['startsAt','endsAt','registrationDeadline'])form[key]=localInput(props.item[key])
 const rules=computed(()=>Object.fromEntries(fields.value.filter(f=>f.required!==false&&f.type!=='switch').map(f=>[f.key,[{required:true,message:'请填写'+f.label,trigger:'blur'}]])))
 async function save(){if(!await formRef.value?.validate().catch(()=>false))return;busy.value=true;const body:Row=Object.fromEntries(fields.value.map(f=>[f.key,form[f.key]]));if(props.kind==='activities')for(const key of ['startsAt','endsAt','registrationDeadline'])body[key]=new Date(body[key]).toISOString();await run(async()=>{await api(`/admin/${props.kind}${props.item?'/'+props.item.id:''}`,props.item?'PUT':'POST',body);emit('saved')},'保存成功');busy.value=false}

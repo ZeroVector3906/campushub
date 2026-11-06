@@ -1,10 +1,10 @@
-# CampusHub · 校园社团综合管理平台
+# 西安欧亚学院征途单车俱乐部 · 综合管理网站
 
-一个实际连接 PostgreSQL 的完整应用，使用 **Java 21、Spring Boot 3.5、Spring Data JPA、Spring Security、Vue 3、Vite、Element Plus**。前端构建后打包进同一个 Spring Boot JAR，电脑、手机使用同一个站点。
+服务于西安欧亚学院征途单车俱乐部的完整应用，实际连接 PostgreSQL，使用 **Java 21、Spring Boot 3.5、Spring Data JPA、Spring Security、Vue 3、Vite、Element Plus**。前端构建后打包进同一个 Spring Boot JAR，电脑、手机使用同一个站点。
 
 ## 立即访问
 
-公网网站：[CampusHub 社团管理平台](https://campushub-2ar9.onrender.com/#/clubs)；[管理员后台](https://campushub-2ar9.onrender.com/#/admin)。已部署到 Render，数据库运行于 Neon，不依赖本机开机。上线与实际验证范围见 [云端验收记录](docs/云端验收.md)。免费实例空闲后可能休眠，再次打开需要等待冷启动。
+公网网站：[征途单车俱乐部](https://campushub-2ar9.onrender.com/#/)；[管理员后台](https://campushub-2ar9.onrender.com/#/admin)。已部署到 Render，数据库运行于 Neon，不依赖本机开机。上线与实际验证范围见 [云端验收记录](docs/云端验收.md)。免费实例空闲后可能休眠，再次打开需要等待冷启动。
 
 本机预览地址：[http://localhost:8080/#/](http://localhost:8080/#/)。这是本机地址，只在运行网站的电脑上可用。
 
@@ -17,9 +17,9 @@
 | 学生 | `student` | `CampusHub@2026` |
 | 管理员 | `admin` | `CampusHub@2026` |
 
-演示账号和样本数据仅由 `SEED_DEMO=true` 创建。正式部署默认关闭演示模式，首次启动通过 `ADMIN_PASSWORD` 设置管理员密码（至少 12 位）。已存在的账号不会因重启而重置密码。
+本地演示账号仅由 `SEED_DEMO=true` 创建。正式部署默认关闭演示模式，首次启动通过 `ADMIN_PASSWORD` 设置管理员密码（至少 12 位）。已存在的账号不会因重启而重置密码。
 
-以上演示账号仅适用于本机。公网管理员为 `admin`，使用独立随机密码；首次部署密码保存在部署者本机的 `.runtime/cloud-admin-password.txt`，不进入 Git 或源码包。普通用户请在公网注册。云端保留原有 8 个社团、7 个活动及总量 60 件的器材资料，本机演示账号、密码和演示成员记录未迁移。
+以上演示账号仅适用于本机。公网管理员为 `admin`，使用独立随机密码；首次部署密码保存在部署者本机的 `.runtime/cloud-admin-password.txt`，不进入 Git 或源码包。普通用户请在公网注册。V2 迁移将原通用平台的示例社团、活动和器材归档，保留历史记录，前台展示征途单车俱乐部。正式活动、器材库存、入社细则和联系渠道由管理员核实后录入，不编造真实数据。详见 [征途专属改版说明](docs/征途专属改版.md)。
 
 ## 功能
 

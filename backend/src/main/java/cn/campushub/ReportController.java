@@ -13,7 +13,8 @@ public class ReportController {
     private final CampusService s;
     public ReportController(CampusService s) { this.s=s; }
     @GetMapping Map<String,Object> report() {
-        var activities=s.activities().findAll();var registrations=s.registrations().findAll();var memberships=s.memberships().findAll();var loans=s.loans().findAll();var repairs=s.repairs().findAll();
+        var activeClubs=s.clubs().findAll().stream().filter(c -> c.active).map(c -> c.id).collect(java.util.stream.Collectors.toSet());
+        var activities=s.activities().findAll().stream().filter(a -> activeClubs.contains(a.clubId)).toList();var activityIds=activities.stream().map(a -> a.id).collect(java.util.stream.Collectors.toSet());var registrations=s.registrations().findAll().stream().filter(r -> activityIds.contains(r.activityId)).toList();var memberships=s.memberships().findAll().stream().filter(m -> activeClubs.contains(m.clubId)).toList();var loans=s.loans().findAll();var repairs=s.repairs().findAll();
         var month=YearMonth.now(ZoneId.of("Asia/Shanghai"));var trend=new ArrayList<Map<String,Object>>();
         for(int i=5;i>=0;i--) {
             var m=month.minusMonths(i);trend.add(v("month",m.toString(),"activities",activities.stream().filter(a -> YearMonth.from(a.startsAt.atZone(ZoneId.of("Asia/Shanghai"))).equals(m) && a.status.equals("PUBLISHED")).count(),
@@ -27,10 +28,10 @@ public class ReportController {
             "pendingApplications",memberships.stream().filter(m -> m.status.equals("PENDING")).count(),
             "pendingLoans",loans.stream().filter(l -> Set.of("PENDING","RETURN_PENDING").contains(l.status)).count(),
             "openRepairs",repairs.stream().filter(r -> Set.of("OPEN","PROCESSING").contains(r.status)).count(),
-            "equipmentTotal",s.equipment().findAll().stream().mapToInt(e -> e.totalQuantity).sum(),
-            "equipmentBorrowed",s.equipment().findAll().stream().mapToInt(e -> e.totalQuantity-e.availableQuantity).sum(),
-            "trend",trend,"clubs",s.clubs().findAll().stream().map(c -> v("name",c.name,"category",c.category,"members",s.memberships().countByClubIdAndStatus(c.id,"APPROVED"))).toList(),
-            "equipment",s.equipment().findAll().stream().map(e -> v("name",e.name,"total",e.totalQuantity,"borrowed",e.totalQuantity-e.availableQuantity,"loanCount",loans.stream().filter(l -> l.equipmentId.equals(e.id)).count())).toList());
+            "equipmentTotal",s.equipment().findAll().stream().filter(e -> e.active).mapToInt(e -> e.totalQuantity).sum(),
+            "equipmentBorrowed",s.equipment().findAll().stream().filter(e -> e.active).mapToInt(e -> e.totalQuantity-e.availableQuantity).sum(),
+            "trend",trend,"clubs",s.clubs().findAll().stream().filter(c -> c.active).map(c -> v("name",c.name,"category",c.category,"members",s.memberships().countByClubIdAndStatus(c.id,"APPROVED"))).toList(),
+            "equipment",s.equipment().findAll().stream().filter(e -> e.active).map(e -> v("name",e.name,"total",e.totalQuantity,"borrowed",e.totalQuantity-e.availableQuantity,"loanCount",loans.stream().filter(l -> l.equipmentId.equals(e.id)).count())).toList());
     }
     @GetMapping("/export") ResponseEntity<byte[]> export(@RequestParam(defaultValue="activities") String type) {
         var rows=new ArrayList<List<?>>();

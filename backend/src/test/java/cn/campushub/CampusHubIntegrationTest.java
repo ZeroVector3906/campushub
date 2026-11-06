@@ -24,6 +24,31 @@ class CampusHubIntegrationTest {
     @Autowired CampusService s;
     @Autowired ObjectMapper json;
     @Autowired PasswordEncoder encoder;
+    @Autowired org.springframework.jdbc.core.JdbcTemplate jdbc;
+    @Test void archivedClubsDoNotLeakIntoPublicActivitiesOrMembershipCounts() throws Exception {
+        var before=json.readTree(mvc.perform(get("/api/public/overview")).andReturn().getResponse().getContentAsString());
+        club.active=false;s.clubs().saveAndFlush(club);
+        var m=new Membership();m.userId=student.id;m.clubId=club.id;m.status="APPROVED";m.reason="归档边界测试";s.memberships().saveAndFlush(m);
+        var publicActivities=json.readTree(mvc.perform(get("/api/activities")).andReturn().getResponse().getContentAsString());
+        assertThat(publicActivities.findValuesAsText("title")).doesNotContain(activity.title);
+        var after=json.readTree(mvc.perform(get("/api/public/overview")).andReturn().getResponse().getContentAsString());
+        assertThat(after.path("memberCount").asLong()).isEqualTo(before.path("memberCount").asLong());
+        assertThat(after.path("activityCount").asInt()).isEqualTo(before.path("activityCount").asInt()-1);
+    }
+    @Test void cyclingMigrationArchivesDemonstrationsWithoutDeletingMembershipHistory() {
+        club.name="光影摄影社";s.clubs().saveAndFlush(club);
+        var m=new Membership();m.userId=student.id;m.clubId=club.id;m.status="APPROVED";m.reason="保留原始记录";s.memberships().saveAndFlush(m);
+        item.assetCode="CH-PH-001";s.equipment().saveAndFlush(item);
+        jdbc.execute((org.springframework.jdbc.core.ConnectionCallback<Void>) connection->{
+            org.springframework.jdbc.datasource.init.ScriptUtils.executeSqlScript(connection,new org.springframework.core.io.ClassPathResource("db/migration/V2__zhengtu_cycling_identity.sql"));return null;
+        });
+        assertThat(jdbc.queryForObject("SELECT active FROM clubs WHERE id=?",Boolean.class,club.id)).isFalse();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM memberships WHERE id=?",Long.class,m.id)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT status FROM activities WHERE id=?",String.class,activity.id)).isEqualTo("CANCELLED");
+        assertThat(jdbc.queryForObject("SELECT total_quantity FROM equipment WHERE id=?",Integer.class,item.id)).isEqualTo(2);
+        assertThat(jdbc.queryForObject("SELECT active FROM equipment WHERE id=?",Boolean.class,item.id)).isFalse();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM clubs WHERE name='征途单车俱乐部' AND active=TRUE",Long.class)).isEqualTo(1);
+    }
     User student,other,admin;Club club;Activity activity;Equipment item;
     @BeforeEach void setup() {
         student=newUser("test_student","STUDENT");other=newUser("test_other","STUDENT");admin=newUser("test_admin","ADMIN");
@@ -36,7 +61,7 @@ class CampusHubIntegrationTest {
     ResultActions putAs(String path,Object body,String username)throws Exception{return mvc.perform(put(path).with(user(username)).with(csrf()).contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsBytes(body)));}
     @Test void publicDataDoesNotExposeSecrets()throws Exception {
         mvc.perform(get("/api/activities")).andExpect(status().isOk()).andExpect(jsonPath("$[0].checkinCode").doesNotExist());
-        mvc.perform(get("/api/clubs")).andExpect(status().isOk()).andExpect(jsonPath("$[0].name").value(club.name));
+        mvc.perform(get("/api/clubs")).andExpect(status().isOk()).andExpect(jsonPath("$[*].name").value(org.hamcrest.Matchers.hasItem(club.name)));
     }
     @Test void authorizationAndCsrfAreEnforced()throws Exception {
         mvc.perform(get("/api/admin/users")).andExpect(status().isUnauthorized());

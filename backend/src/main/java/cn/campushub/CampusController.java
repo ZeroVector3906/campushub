@@ -21,17 +21,20 @@ public class CampusController {
     final CampusService s; final ApiViews views; final AuthController auth; final PasswordEncoder encoder;
     final FindByIndexNameSessionRepository<? extends Session> sessions;
     public CampusController(CampusService s,ApiViews views,AuthController auth,PasswordEncoder encoder,FindByIndexNameSessionRepository<? extends Session> sessions) { this.s=s;this.views=views;this.auth=auth;this.encoder=encoder;this.sessions=sessions; }
-    @GetMapping("/health") Map<String,String> health() { return Map.of("status","UP","application","CampusHub"); }
+    @GetMapping("/health") Map<String,String> health() { return Map.of("status","UP","application","CampusHub","club","西安欧亚学院征途单车俱乐部"); }
     @GetMapping("/clubs") List<?> clubs() { return s.clubs().findAll().stream().filter(c -> c.active).map(views::club).toList(); }
+    private Set<Long> activeClubIds() { return s.clubs().findAll().stream().filter(c -> c.active).map(c -> c.id).collect(java.util.stream.Collectors.toSet()); }
     @GetMapping("/activities") List<?> activities() {
-        return s.activities().findAll().stream().filter(a -> a.status.equals("PUBLISHED"))
+        var clubIds=activeClubIds();
+        return s.activities().findAll().stream().filter(a -> clubIds.contains(a.clubId) && a.status.equals("PUBLISHED"))
             .sorted(Comparator.comparing(a -> a.startsAt)).map(a -> views.activity(a,false)).toList();
     }
     @GetMapping("/equipment") List<?> equipment() { return s.equipment().findAll().stream().filter(e -> e.active).map(ApiViews::equipment).toList(); }
     @GetMapping("/public/overview") Map<String,Object> overview() {
-        var activities=s.activities().findAll().stream().filter(a -> a.status.equals("PUBLISHED")).toList();
+        var clubIds=activeClubIds();
+        var activities=s.activities().findAll().stream().filter(a -> clubIds.contains(a.clubId) && a.status.equals("PUBLISHED")).toList();
         return v("demoEnabled",demoEnabled,"clubCount",s.clubs().findAll().stream().filter(c -> c.active).count(),"userCount",s.users().count(),
-            "memberCount",s.memberships().findAll().stream().filter(m -> m.status.equals("APPROVED")).map(m -> m.userId).distinct().count(),
+            "memberCount",s.memberships().findAll().stream().filter(m -> clubIds.contains(m.clubId) && m.status.equals("APPROVED")).map(m -> m.userId).distinct().count(),
             "activityCount",activities.size(),"upcomingCount",activities.stream().filter(a -> a.endsAt.isAfter(Instant.now())).count(),
             "equipmentCount",s.equipment().findAll().stream().filter(e -> e.active).mapToInt(e -> e.totalQuantity).sum());
     }

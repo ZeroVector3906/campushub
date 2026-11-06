@@ -77,7 +77,7 @@ class HttpWorkflowTest {
             first.call("/api/auth/me","GET",null,401);secondSession.call("/api/auth/me","GET",null,401);
             first.login(firstName,"ChangedPassword2026!");first.call("/api/auth/logout","POST",null,200);first.call("/api/auth/me","GET",null,401);
             second.call("/api/admin/users","GET",null,403);
-            var root=admin.raw("/","GET",null);assertThat(root.statusCode()).isEqualTo(200);assertThat(root.body()).contains("CampusHub");assertThat(admin.raw("/images/campus.jpg","GET",null).statusCode()).isEqualTo(200);
+            var root=admin.raw("/","GET",null);assertThat(root.statusCode()).isEqualTo(200);assertThat(root.body()).contains("西安欧亚学院征途单车俱乐部");assertThat(admin.raw("/images/cycling.svg","GET",null).statusCode()).isEqualTo(200);
         } finally {
             // Delete only fixtures created by this test; business/demo database is never used.
             for(var name:List.of(firstName,secondName)) {
