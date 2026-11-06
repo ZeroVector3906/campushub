@@ -1,0 +1,190 @@
+{
+  "base": "https://campushub-2ar9.onrender.com",
+  "completedAt": "2026-11-06T19:43:54.509Z",
+  "checks": [
+    {
+      "method": "GET",
+      "path": "/api/health",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/clubs",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/equipment",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/activities",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/users",
+      "status": 403
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/users",
+      "status": 401
+    },
+    {
+      "check": "CSRF rejection",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/api/clubs/1/applications",
+      "status": 201
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/applications/1/review",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/activities",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/activities/8/registrations",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/registrations/1/checkin",
+      "status": 400
+    },
+    {
+      "method": "POST",
+      "path": "/api/registrations/1/checkin",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/equipment",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/loans",
+      "status": 201
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/loans/1/review",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/loans/1/return",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/loans/1/review",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/equipment",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/repairs",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/repairs/1/progress",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/repairs/1/progress",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/repairs/1/progress",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/reports",
+      "status": 200
+    },
+    {
+      "check": "CSV members",
+      "status": 200
+    },
+    {
+      "check": "CSV activities",
+      "status": 200
+    },
+    {
+      "check": "CSV equipment",
+      "status": 200
+    },
+    {
+      "check": "CSV repairs",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/applications/1/withdraw",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me",
+      "status": 401
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/activities/8",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/2/access",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    }
+  ],
+  "fixtureAccount": "cloudqa_mw5dtpc4",
+  "fixtureAccountDisabled": true,
+  "qaActivityCancelled": true,
+  "notes": "Original public content imported. Local account passwords and local browser test fixtures were not migrated. CSV response verified; browser download-to-disk not verified."
+}

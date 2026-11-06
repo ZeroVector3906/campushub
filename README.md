@@ -4,9 +4,11 @@
 
 ## 立即访问
 
-本机预览地址：[http://localhost:8080/#/](http://localhost:8080/#/)。这是本机地址，只在运行网站的电脑上可用；目前尚未完成公网部署。
+公网网站：[CampusHub 社团管理平台](https://campushub-2ar9.onrender.com/#/clubs)；[管理员后台](https://campushub-2ar9.onrender.com/#/admin)。已部署到 Render，数据库运行于 Neon，不依赖本机开机。上线与实际验证范围见 [云端验收记录](docs/云端验收.md)。免费实例空闲后可能休眠，再次打开需要等待冷启动。
 
-若出现“拒绝连接 / ERR_CONNECTION_REFUSED”，请双击项目根目录的 `CampusHub.cmd`，它会启动本项目的数据库和网站，成功后自动打开浏览器。已有构建无需重新安装依赖；关机后需要再次启动。公网部署步骤见 [部署教程](docs/部署教程.md)，连接云平台并部署成功后才能获得其他设备可访问的 HTTPS 地址。
+本机预览地址：[http://localhost:8080/#/](http://localhost:8080/#/)。这是本机地址，只在运行网站的电脑上可用。
+
+本机预览若出现“拒绝连接 / ERR_CONNECTION_REFUSED”，请双击项目根目录的 `CampusHub.cmd`，它会启动本项目的数据库和网站，成功后自动打开浏览器。已有构建无需重新安装依赖；关机后需要再次启动。自行部署步骤见 [部署教程](docs/部署教程.md)。
 
 最终交付目录为 `release/`：`CampusHub-source.zip` 是完整源码包，`CampusHub-1.0.0.jar` 是包含前端的可运行包，`verification.json` 和 `测试摘要.txt` 记录本次实际执行结果。源码包不包含体积较大的独立运行环境或数据库文件；新电脑先按下方步骤准备环境。
 
@@ -16,6 +18,8 @@
 | 管理员 | `admin` | `CampusHub@2026` |
 
 演示账号和样本数据仅由 `SEED_DEMO=true` 创建。正式部署默认关闭演示模式，首次启动通过 `ADMIN_PASSWORD` 设置管理员密码（至少 12 位）。已存在的账号不会因重启而重置密码。
+
+以上演示账号仅适用于本机。公网管理员为 `admin`，使用独立随机密码；首次部署密码保存在部署者本机的 `.runtime/cloud-admin-password.txt`，不进入 Git 或源码包。普通用户请在公网注册。云端保留原有 8 个社团、7 个活动及总量 60 件的器材资料，本机演示账号、密码和演示成员记录未迁移。
 
 ## 功能
 
@@ -166,3 +170,4 @@ Dockerfile / compose.yml / render.yaml
 - [免费部署与维护](docs/部署教程.md)
 - [测试报告与验收限制](docs/测试报告.md)
 - [图片与开源依赖说明](docs/素材说明.md)
+
