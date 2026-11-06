@@ -1,0 +1,11 @@
+.git
+.tools
+.runtime
+.env
+frontend/node_modules
+frontend/dist
+frontend/*.tsbuildinfo
+backend/target
+release
+docs
+*.zip

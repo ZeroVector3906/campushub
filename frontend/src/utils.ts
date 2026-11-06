@@ -1,0 +1,9 @@
+import type { Activity } from './types'
+export const statusLabels:Record<string,string>={PENDING:'待审核',APPROVED:'已通过',REJECTED:'已驳回',WITHDRAWN:'已退出',PUBLISHED:'已发布',CANCELLED:'已取消',RETURN_PENDING:'待验收归还',RETURNED:'已归还',OPEN:'待受理',PROCESSING:'维修中',RESOLVED:'已修复',CLOSED:'已关闭',STUDENT:'学生',ADMIN:'管理员',LOW:'低',NORMAL:'普通',HIGH:'紧急'}
+export const label=(status:string)=>statusLabels[status]||status
+export const statusType=(s:string):'success'|'warning'|'danger'|'info'|'primary'=>['APPROVED','RETURNED','RESOLVED','PUBLISHED'].includes(s)?'success':['PENDING','RETURN_PENDING','OPEN'].includes(s)?'warning':['REJECTED','HIGH'].includes(s)?'danger':['PROCESSING'].includes(s)?'primary':'info'
+export function date(value?:string,full=false){if(!value)return '—';return new Intl.DateTimeFormat('zh-CN',{month:'2-digit',day:'2-digit',...(full?{year:'numeric',hour:'2-digit',minute:'2-digit'}:{})}).format(new Date(value))}
+export function activityState(a:Activity,now=Date.now()){if(a.status==='CANCELLED')return '已取消';if(new Date(a.endsAt).getTime()<now)return '已结束';if(new Date(a.startsAt).getTime()<=now)return '进行中';if(a.registrationCount>=a.capacity)return '名额已满';if(new Date(a.registrationDeadline).getTime()<=now)return '报名截止';return '报名中'}
+export function canCheckin(a:Activity,now=Date.now()){return a.status==='PUBLISHED' && now>=new Date(a.startsAt).getTime()-1800000 && now<=new Date(a.endsAt).getTime()}
+export function activityImage(a:{category:string;title?:string}){if(a.title?.includes('音乐'))return '/images/music.jpg';if(a.title?.includes('摄影'))return '/images/photography.jpg';if(a.category==='体育运动')return '/images/hiking.jpg';if(a.category==='学术科技')return '/images/coding.jpg';return '/images/campus.jpg'}
+export const localInput=(value:string)=>{const d=new Date(value);return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16)}

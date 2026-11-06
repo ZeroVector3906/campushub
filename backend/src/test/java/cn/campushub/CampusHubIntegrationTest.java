@@ -1,0 +1,128 @@
+package cn.campushub;
+
+import cn.campushub.Domain.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.web.servlet.*;
+import org.springframework.transaction.annotation.Transactional;
+import java.time.*;
+import java.util.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+
+@SpringBootTest(properties={"spring.datasource.url=${TEST_DB_URL:jdbc:postgresql://localhost:54329/campushub_test}","campushub.seed-demo=false","campushub.admin-password=TestAdminPassword2026!"})
+@AutoConfigureMockMvc @Transactional
+class CampusHubIntegrationTest {
+    @Autowired MockMvc mvc;
+    @Autowired CampusService s;
+    @Autowired ObjectMapper json;
+    @Autowired PasswordEncoder encoder;
+    User student,other,admin;Club club;Activity activity;Equipment item;
+    @BeforeEach void setup() {
+        student=newUser("test_student","STUDENT");other=newUser("test_other","STUDENT");admin=newUser("test_admin","ADMIN");
+        club=new Club();club.name="测试社团";club.category="学术科技";club.summary="测试简介";club.description="测试详细介绍";club.icon="code";club.color="#547D6A";club.location="A101";club.contact="test@campus.edu";s.clubs().save(club);
+        activity=new Activity();activity.clubId=club.id;activity.title="测试活动";activity.category="学术科技";activity.description="活动介绍";activity.location="A101";activity.startsAt=Instant.now().plusSeconds(600);activity.endsAt=Instant.now().plusSeconds(7800);activity.registrationDeadline=activity.startsAt;activity.capacity=1;activity.checkinCode="TEST2026";s.activities().save(activity);
+        item=new Equipment();item.name="测试相机";item.category="摄影器材";item.assetCode="TEST001";item.description="测试器材";item.location="A101";item.totalQuantity=2;item.availableQuantity=2;s.equipment().save(item);
+    }
+    User newUser(String username,String role) {var u=new User();u.username=username;u.name=username;u.passwordHash=encoder.encode("Password2026!");u.email=username+"@campus.edu";u.studentNo=username;u.department="测试学院";u.role=role;return s.users().save(u);}
+    ResultActions postAs(String path,Object body,String username)throws Exception{return mvc.perform(post(path).with(user(username)).with(csrf()).contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsBytes(body)));}
+    ResultActions putAs(String path,Object body,String username)throws Exception{return mvc.perform(put(path).with(user(username)).with(csrf()).contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsBytes(body)));}
+    @Test void publicDataDoesNotExposeSecrets()throws Exception {
+        mvc.perform(get("/api/activities")).andExpect(status().isOk()).andExpect(jsonPath("$[0].checkinCode").doesNotExist());
+        mvc.perform(get("/api/clubs")).andExpect(status().isOk()).andExpect(jsonPath("$[0].name").value(club.name));
+    }
+    @Test void authorizationAndCsrfAreEnforced()throws Exception {
+        mvc.perform(get("/api/admin/users")).andExpect(status().isUnauthorized());
+        mvc.perform(get("/api/admin/users").with(user(student.username))).andExpect(status().isForbidden());
+        mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content("{\"username\":\"admin\",\"password\":\"x\"}")).andExpect(status().isForbidden());
+        mvc.perform(get("/api/admin/users").with(user(admin.username))).andExpect(status().isOk()).andExpect(jsonPath("$[0].passwordHash").doesNotExist());
+    }
+    @Test void registrationEncryptsPasswordAndCannotChooseRole()throws Exception {
+        var body=Map.of("username","fresh_user","password","Password2026!","name","新同学","email","fresh@campus.edu","studentNo","20260001","department","计算机学院","role","ADMIN");
+        mvc.perform(post("/api/auth/register").with(csrf()).contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsBytes(body))).andExpect(status().isCreated()).andExpect(jsonPath("$.role").value("STUDENT"));
+        var u=s.users().findByUsername("fresh_user").orElseThrow();assertThat(u.passwordHash).isNotEqualTo("Password2026!");assertThat(encoder.matches("Password2026!",u.passwordHash)).isTrue();
+        mvc.perform(post("/api/auth/login").with(csrf()).contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsBytes(Map.of("username","fresh_user","password","Password2026!")))).andExpect(status().isOk()).andExpect(jsonPath("$.name").value("新同学"));
+    }
+    @Test void invalidRegistrationIsRejected()throws Exception {
+        mvc.perform(post("/api/auth/register").with(csrf()).contentType(MediaType.APPLICATION_JSON).content("{\"username\":\"!\",\"password\":\"123\"}")).andExpect(status().isBadRequest());
+    }
+    @Test void clubApplicationCanBeReviewedAndWithdrawn()throws Exception {
+        postAs("/api/clubs/"+club.id+"/applications",Map.of("reason","热爱编程，希望加入"),student.username).andExpect(status().isCreated());
+        postAs("/api/clubs/"+club.id+"/applications",Map.of("reason","重复申请"),student.username).andExpect(status().isBadRequest());
+        var m=s.memberships().findByUserIdAndClubId(student.id,club.id).orElseThrow();
+        putAs("/api/admin/applications/"+m.id+"/review",Map.of("status","APPROVED","note","欢迎加入"),admin.username).andExpect(status().isOk()).andExpect(jsonPath("$.status").value("APPROVED"));
+        postAs("/api/applications/"+m.id+"/withdraw",Map.of(),other.username).andExpect(status().isForbidden());
+        postAs("/api/applications/"+m.id+"/withdraw",Map.of(),student.username).andExpect(status().isOk());assertThat(s.memberships().findById(m.id).orElseThrow().status).isEqualTo("WITHDRAWN");
+    }
+    @Test void activityCapacityAndDuplicateRegistrationAreEnforced()throws Exception {
+        postAs("/api/activities/"+activity.id+"/registrations",Map.of(),student.username).andExpect(status().isCreated());
+        postAs("/api/activities/"+activity.id+"/registrations",Map.of(),student.username).andExpect(status().isBadRequest());
+        postAs("/api/activities/"+activity.id+"/registrations",Map.of(),other.username).andExpect(status().isBadRequest());
+    }
+    @Test void checkinRequiresOwnerCodeAndTimeWindow()throws Exception {
+        var r=s.register(student,activity.id);
+        postAs("/api/registrations/"+r.id+"/checkin",Map.of("code","TEST2026"),other.username).andExpect(status().isForbidden());
+        postAs("/api/registrations/"+r.id+"/checkin",Map.of("code","WRONG"),student.username).andExpect(status().isBadRequest());
+        postAs("/api/registrations/"+r.id+"/checkin",Map.of("code","TEST2026"),student.username).andExpect(status().isOk()).andExpect(jsonPath("$.checkedInAt").isNotEmpty());
+        postAs("/api/registrations/"+r.id+"/checkin",Map.of("code","TEST2026"),student.username).andExpect(status().isBadRequest());
+    }
+    @Test void earlyCheckinAndLateRegistrationAreRejected()throws Exception {
+        activity.startsAt=Instant.now().plusSeconds(7200);activity.endsAt=Instant.now().plusSeconds(14400);activity.registrationDeadline=activity.startsAt;s.activities().save(activity);var r=s.register(student,activity.id);
+        postAs("/api/registrations/"+r.id+"/checkin",Map.of("code","TEST2026"),student.username).andExpect(status().isBadRequest());
+        activity.registrationDeadline=Instant.now().minusSeconds(1);s.activities().save(activity);
+        postAs("/api/activities/"+activity.id+"/registrations",Map.of(),other.username).andExpect(status().isBadRequest());
+    }
+    @Test void loanApprovalAndReturnRestoreStockExactlyOnce()throws Exception {
+        var l=s.applyLoan(student,new Requests.LoanInput(item.id,2,"测试用途",LocalDate.now().plusDays(2)));
+        putAs("/api/admin/loans/"+l.id+"/review",Map.of("status","APPROVED"),admin.username).andExpect(status().isOk());assertThat(s.equipment().findById(item.id).orElseThrow().availableQuantity).isZero();
+        postAs("/api/loans/"+l.id+"/return",Map.of(),student.username).andExpect(status().isOk());
+        putAs("/api/admin/loans/"+l.id+"/review",Map.of("status","RETURNED"),admin.username).andExpect(status().isOk());
+        putAs("/api/admin/loans/"+l.id+"/review",Map.of("status","RETURNED"),admin.username).andExpect(status().isBadRequest());assertThat(s.equipment().findById(item.id).orElseThrow().availableQuantity).isEqualTo(2);
+    }
+    @Test void pendingLoansDoNotReserveAndApprovalCannotOversell()throws Exception {
+        var first=s.applyLoan(student,new Requests.LoanInput(item.id,2,"测试用途",LocalDate.now().plusDays(1)));var second=s.applyLoan(other,new Requests.LoanInput(item.id,2,"测试用途",LocalDate.now().plusDays(1)));
+        s.reviewLoan(first.id,new Requests.Review("APPROVED",""));
+        putAs("/api/admin/loans/"+second.id+"/review",Map.of("status","APPROVED"),admin.username).andExpect(status().isBadRequest());
+        assertThat(s.equipment().findById(item.id).orElseThrow().availableQuantity).isZero();
+    }
+    @Test void stockCannotShrinkBelowOutstandingLoans()throws Exception {
+        var l=s.applyLoan(student,new Requests.LoanInput(item.id,2,"测试用途",LocalDate.now().plusDays(1)));s.reviewLoan(l.id,new Requests.Review("APPROVED",""));
+        assertThatThrownBy(()->s.saveEquipment(item.id,new Requests.EquipmentInput(item.name,item.category,item.assetCode,item.description,item.location,1,true))).isInstanceOf(ApiException.class);
+    }
+    @Test void repairMaintainsOrderedProgressAndValidTransitions()throws Exception {
+        var t=s.repair(student,new Requests.RepairInput(item.id,"无法开机","按开关后没有反应","A101","HIGH"));
+        postAs("/api/admin/repairs/"+t.id+"/progress",Map.of("status","CLOSED","note","非法跳转"),admin.username).andExpect(status().isBadRequest());
+        postAs("/api/admin/repairs/"+t.id+"/progress",Map.of("status","PROCESSING","note","已安排检修"),admin.username).andExpect(status().isOk());
+        postAs("/api/admin/repairs/"+t.id+"/progress",Map.of("status","RESOLVED","note","已更换电池"),admin.username).andExpect(status().isOk());
+        postAs("/api/admin/repairs/"+t.id+"/progress",Map.of("status","CLOSED","note","维修完成"),admin.username).andExpect(status().isOk()).andExpect(jsonPath("$.updates.length()").value(4));
+        mvc.perform(get("/api/me/dashboard").with(user(other.username))).andExpect(status().isOk()).andExpect(jsonPath("$.repairs.length()").value(0));
+    }
+    @Test void disabledUserImmediatelyLosesAccess()throws Exception {
+        putAs("/api/admin/users/"+student.id+"/access",Map.of("role","STUDENT","enabled",false),admin.username).andExpect(status().isOk());
+        mvc.perform(get("/api/me/dashboard").with(user(student.username))).andExpect(status().isUnauthorized());
+        putAs("/api/admin/users/"+admin.id+"/access",Map.of("role","STUDENT","enabled",true),admin.username).andExpect(status().isBadRequest());
+    }
+    @Test void reportsExportChineseCsvAndProtectFormulaCells()throws Exception {
+        var result=mvc.perform(get("/api/admin/reports/export?type=equipment").with(user(admin.username))).andExpect(status().isOk()).andExpect(header().string("Content-Disposition","attachment; filename=campushub-equipment.csv")).andReturn();
+        assertThat(result.getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8)).startsWith("\uFEFF").contains("资产编号","测试相机");
+        assertThat(ReportController.cell("=SUM(A1:A2)")).isEqualTo("\"'=SUM(A1:A2)\"");assertThat(ReportController.cell("a\"b")).isEqualTo("\"a\"\"b\"");
+        mvc.perform(get("/api/admin/reports").with(user(admin.username))).andExpect(status().isOk()).andExpect(jsonPath("$.trend.length()").value(6));
+    }
+    @Test void profileAndPasswordCanBeUpdated()throws Exception {
+        putAs("/api/me/profile",Map.of("name","新名字","email","new@campus.edu","department","新院系","bio","热爱校园"),student.username).andExpect(status().isOk()).andExpect(jsonPath("$.name").value("新名字"));
+        putAs("/api/me/password",Map.of("oldPassword","incorrect","newPassword","NewPassword2026!"),student.username).andExpect(status().isBadRequest());
+        putAs("/api/me/password",Map.of("oldPassword","Password2026!","newPassword","NewPassword2026!"),student.username).andExpect(status().isOk());
+        assertThat(encoder.matches("NewPassword2026!",s.users().findById(student.id).orElseThrow().passwordHash)).isTrue();
+    }
+    @Test void cancelledActivitiesCannotBeJoined()throws Exception {
+        activity.status="CANCELLED";s.activities().save(activity);
+        postAs("/api/activities/"+activity.id+"/registrations",Map.of(),student.username).andExpect(status().isBadRequest());
+    }
+}
