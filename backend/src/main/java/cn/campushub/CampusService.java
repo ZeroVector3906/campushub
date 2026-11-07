@@ -30,7 +30,7 @@ public class CampusService {
         if(!club.active || !club.recruiting) throw ApiException.bad("该社团暂未开放招新");
         var m=memberships.findByUserIdAndClubId(user.id,clubId).orElseGet(Membership::new);
         if(Set.of("PENDING","APPROVED").contains(m.status) && m.id!=null) throw ApiException.bad("你已申请或已加入该社团");
-        m.userId=user.id;m.clubId=clubId;m.reason=input.reason();m.status="PENDING";m.reviewNote="";m.createdAt=Instant.now();m.reviewedAt=null;
+        m.userId=user.id;m.clubId=clubId;m.reason=input.reason();m.contact=input.contact().trim();m.grade=input.grade().trim();m.college=input.college().trim();m.status="PENDING";m.reviewNote="";m.createdAt=Instant.now();m.reviewedAt=null;
         return memberships.save(m);
     }
     void withdraw(User user,Long id) {

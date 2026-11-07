@@ -25,6 +25,29 @@ class CampusHubIntegrationTest {
     @Autowired ObjectMapper json;
     @Autowired PasswordEncoder encoder;
     @Autowired org.springframework.jdbc.core.JdbcTemplate jdbc;
+    @Test void ridingSuggestionsPreserveContactAndOnlyOwnerOrAdminCanRead() throws Exception {
+        var body=Map.of("kind","SUGGESTION","title","集体骑行建议","description","希望组织周末集体骑行","contact","微信：test-rider");
+        mvc.perform(post("/api/riding-requests").contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(body))).andExpect(status().isForbidden());
+        var result=postAs("/api/riding-requests",body,student.username).andExpect(status().isCreated()).andExpect(jsonPath("$.user.id").value(student.id)).andExpect(jsonPath("$.contact").value("微信：test-rider")).andReturn();
+        long id=json.readTree(result.getResponse().getContentAsString()).path("id").asLong();
+        mvc.perform(get("/api/riding-requests").with(user(other.username))).andExpect(status().isOk()).andExpect(jsonPath("$[?(@.id == "+id+")]").isEmpty());
+        mvc.perform(get("/api/admin/riding-requests").with(user(student.username))).andExpect(status().isForbidden());
+        putAs("/api/admin/riding-requests/"+id+"/review",Map.of("status","APPROVED","note","请联系管理员确认路线"),admin.username).andExpect(status().isOk()).andExpect(jsonPath("$.reviewedAt").isNotEmpty());
+        mvc.perform(get("/api/riding-requests").with(user(student.username))).andExpect(status().isOk()).andExpect(jsonPath("$[?(@.id == "+id+")].reviewNote").value(org.hamcrest.Matchers.hasItem("请联系管理员确认路线")));
+    }
+    @Test void roomRequestsValidatePlaceOtherUsageAndTimeRange() throws Exception {
+        var body=new HashMap<String,Object>();body.put("kind","ROOM");body.put("title","骑行室申请");body.put("description","两人训练");body.put("contact","test@example.test");body.put("room","北三骑行室");body.put("usage","其他");body.put("startsAt",Instant.now().plusSeconds(3600).toString());body.put("endsAt",Instant.now().plusSeconds(7200).toString());
+        postAs("/api/riding-requests",body,student.username).andExpect(status().isBadRequest());
+        body.put("otherUsage","整理车辆配件");
+        postAs("/api/riding-requests",body,student.username).andExpect(status().isCreated()).andExpect(jsonPath("$.room").value("北三骑行室")).andExpect(jsonPath("$.otherUsage").value("整理车辆配件"));
+        body.put("endsAt",Instant.now().toString());postAs("/api/riding-requests",body,student.username).andExpect(status().isBadRequest());
+        body.put("endsAt",Instant.now().plusSeconds(7200).toString());body.put("room","无效场所");postAs("/api/riding-requests",body,student.username).andExpect(status().isBadRequest());
+        body.put("room","和光文体中心俱乐部");body.put("usage","训练");postAs("/api/riding-requests",body,student.username).andExpect(status().isCreated()).andExpect(jsonPath("$.otherUsage").value(""));
+    }
+    @Test void membershipRequiresAndStoresApplicantDetails() throws Exception {
+        postAs("/api/clubs/"+club.id+"/applications",Map.of("reason","加入训练"),student.username).andExpect(status().isBadRequest());
+        postAs("/api/clubs/"+club.id+"/applications",Map.of("reason","加入训练","contact","QQ：12345678","grade","2025级","college","信息工程学院"),student.username).andExpect(status().isCreated()).andExpect(jsonPath("$.contact").value("QQ：12345678")).andExpect(jsonPath("$.grade").value("2025级")).andExpect(jsonPath("$.college").value("信息工程学院"));
+    }
     @Test void archivedClubsDoNotLeakIntoPublicActivitiesOrMembershipCounts() throws Exception {
         var before=json.readTree(mvc.perform(get("/api/public/overview")).andReturn().getResponse().getContentAsString());
         club.active=false;s.clubs().saveAndFlush(club);
@@ -79,8 +102,8 @@ class CampusHubIntegrationTest {
         mvc.perform(post("/api/auth/register").with(csrf()).contentType(MediaType.APPLICATION_JSON).content("{\"username\":\"!\",\"password\":\"123\"}")).andExpect(status().isBadRequest());
     }
     @Test void clubApplicationCanBeReviewedAndWithdrawn()throws Exception {
-        postAs("/api/clubs/"+club.id+"/applications",Map.of("reason","热爱编程，希望加入"),student.username).andExpect(status().isCreated());
-        postAs("/api/clubs/"+club.id+"/applications",Map.of("reason","重复申请"),student.username).andExpect(status().isBadRequest());
+        postAs("/api/clubs/"+club.id+"/applications",Map.of("reason","热爱编程，希望加入","contact","test@example.test","grade","2025级","college","信息工程学院"),student.username).andExpect(status().isCreated());
+        postAs("/api/clubs/"+club.id+"/applications",Map.of("reason","重复申请","contact","test@example.test","grade","2025级","college","信息工程学院"),student.username).andExpect(status().isBadRequest());
         var m=s.memberships().findByUserIdAndClubId(student.id,club.id).orElseThrow();
         putAs("/api/admin/applications/"+m.id+"/review",Map.of("status","APPROVED","note","欢迎加入"),admin.username).andExpect(status().isOk()).andExpect(jsonPath("$.status").value("APPROVED"));
         postAs("/api/applications/"+m.id+"/withdraw",Map.of(),other.username).andExpect(status().isForbidden());

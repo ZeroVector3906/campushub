@@ -16,7 +16,7 @@ public final class Requests {
     public record Profile(@NotBlank @Size(max=50) String name, @NotBlank @Email @Size(max=120) String email,
         @NotBlank @Size(max=100) String department, @Size(max=500) String bio) {}
     public record Password(@NotBlank String oldPassword, @NotBlank @Size(min=8,max=64) String newPassword) {}
-    public record Application(@NotBlank @Size(max=1000) String reason) {}
+    public record Application(@NotBlank @Size(max=1000) String reason, @NotBlank @Size(max=120) String contact, @NotBlank @Size(max=40) String grade, @NotBlank @Size(max=100) String college) {}
     public record Review(@NotBlank String status, @Size(max=500) String note) {}
     public record Checkin(@NotBlank @Size(max=32) String code) {}
     public record ClubInput(@NotBlank @Size(max=80) String name, @NotBlank @Size(max=30) String category,

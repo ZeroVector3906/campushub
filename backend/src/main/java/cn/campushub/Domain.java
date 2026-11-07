@@ -41,6 +41,7 @@ public final class Domain {
         public Long userId;
         public Long clubId;
         public String reason;
+        public String contact="", grade="", college="";
         public String status = "PENDING";
         public String reviewNote = "";
         public Instant reviewedAt;

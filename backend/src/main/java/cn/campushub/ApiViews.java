@@ -35,7 +35,7 @@ public class ApiViews {
     }
     Map<String,Object> membership(Membership m) {
         return v("id",m.id,"user",users.findById(m.userId).map(ApiViews::user).orElse(null),"club",clubs.findById(m.clubId).map(this::club).orElse(null),
-                "reason",m.reason,"status",m.status,"reviewNote",m.reviewNote,"createdAt",m.createdAt,"reviewedAt",m.reviewedAt);
+                "reason",m.reason,"contact",m.contact,"grade",m.grade,"college",m.college,"status",m.status,"reviewNote",m.reviewNote,"createdAt",m.createdAt,"reviewedAt",m.reviewedAt);
     }
     Map<String,Object> registration(Registration r) {
         return v("id",r.id,"user",users.findById(r.userId).map(ApiViews::user).orElse(null),"activity",activities.findById(r.activityId).map(a -> activity(a,false)).orElse(null),

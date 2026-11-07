@@ -37,7 +37,7 @@ try {
   await anon.call('/api/admin/users','GET',undefined,401);
   const noCsrf=await student.raw('/api/clubs/'+clubMap.values().next().value+'/applications','POST',{reason:'CSRF check'});if(noCsrf.status!==403)throw Error('CSRF protection failed');
   checks.push({check:'CSRF rejection',status:noCsrf.status});
-  const application=await student.call('/api/clubs/'+clubMap.values().next().value+'/applications','POST',{reason:'云端部署验收，仅测试操作'},201);
+  const application=await student.call('/api/clubs/'+clubMap.values().next().value+'/applications','POST',{reason:'云端部署验收，仅测试操作',contact:'qa@example.test',grade:'2025级',college:'部署验收'},201);
   await admin.call('/api/admin/applications/'+application.id+'/review','PUT',{status:'APPROVED',note:'云端验收'});
   const now=Date.now(),stamp=ms=>new Date(ms).toISOString();
   const body={clubId:clubMap.values().next().value,title:'征途骑行验收活动（已完成后取消）'+suffix,category:'骑行训练',description:'仅供部署接口验收，无实际活动。',location:'云端测试环境',startsAt:stamp(now+120000),endsAt:stamp(now+3600000),registrationDeadline:stamp(now+120000),capacity:1,checkinCode:crypto.randomBytes(8).toString('hex'),featured:false,status:'PUBLISHED'};
