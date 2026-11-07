@@ -4,7 +4,7 @@
 
 ## 立即访问
 
-公网网站：[征途单车俱乐部](https://campushub-2ar9.onrender.com/#/)；[管理员后台](https://campushub-2ar9.onrender.com/#/admin)。已部署到 Render，数据库运行于 Neon，不依赖本机开机。上线与实际验证范围见 [云端验收记录](docs/云端验收.md)。免费实例空闲后可能休眠，再次打开需要等待冷启动。
+公网网站：[征途单车俱乐部](https://campushub-2ar9.onrender.com/#/)；[俱乐部介绍](https://campushub-2ar9.onrender.com/#/clubs)；[管理员后台](https://campushub-2ar9.onrender.com/#/admin)。部署于 Render，数据库运行于 Neon，不依赖本机开机。当前版本与实际验证范围见 [征途专属改版说明](docs/征途专属改版.md)，简介内容取舍见 [简介内容整理](docs/简介内容整理.md)。免费实例空闲后可能休眠，再次打开需要等待冷启动。
 
 本机预览地址：[http://localhost:8080/#/](http://localhost:8080/#/)。这是本机地址，只在运行网站的电脑上可用。
 
