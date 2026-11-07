@@ -45,7 +45,7 @@ public class RidingRequestController {
         r.room="";r.usage="";r.otherUsage="";
         if(x.kind().equals("ROOM")){
             if(!Set.of(MemberPolicy.HEGUANG,"和光文体中心俱乐部",MemberPolicy.NORTH).contains(Objects.toString(x.room(),"")))throw ApiException.bad("请选择有效骑行室");
-            if(!Set.of("训练","存放车辆","拿车","维修","休息","其他").contains(Objects.toString(MemberPolicy.normalizeUsage(x.usage()),"")))throw ApiException.bad("请选择使用方式");
+            if(!Set.of("训练","存取车辆","拿车","维修","休息","其他").contains(Objects.toString(MemberPolicy.normalizeUsage(x.usage()),"")))throw ApiException.bad("请选择使用方式");
             if(x.usage().equals("其他")&&(x.otherUsage()==null||x.otherUsage().isBlank()))throw ApiException.bad("请填写其他使用方式");
             if(x.startsAt()==null||x.endsAt()==null||!x.startsAt().isAfter(Instant.now())||!x.endsAt().isAfter(x.startsAt()))throw ApiException.bad("开始时间须晚于当前时间，结束时间须晚于开始时间");
             r.room=x.room().equals("和光文体中心俱乐部")?MemberPolicy.HEGUANG:x.room();r.usage=MemberPolicy.normalizeUsage(x.usage());members.requireRoom(auth.current(a),r.room,r.usage);r.otherUsage=x.usage().equals("其他")?x.otherUsage().trim():"";r.startsAt=x.startsAt();r.endsAt=x.endsAt();

@@ -7,7 +7,7 @@ import{state,refreshMine}from'../store';import{roomNames,roomUsages}from'../memb
 const route=useRoute(),roomMode=computed(()=>route.path==='/rooms'),records=ref<Row[]>([]),busy=ref(false),error=ref(''),formRef=ref()
 const form=reactive({title:'',description:'',contact:state.user?.contact||'',room:'和光文体中心单车俱乐部',usage:'训练',otherUsage:'',startDay:'',startTime:'',endDay:'',endTime:''})
 const allowedRooms=computed<string[]>(()=>state.mine.member?.allowedRooms||[]),allowedUsages=computed<string[]>(()=>state.mine.member?.allowedUsages||[]),canApplyRoom=computed(()=>allowedRooms.value.length>0);
-watch([allowedRooms,allowedUsages],()=>{if(!allowedRooms.value.includes(form.room))form.room=allowedRooms.value[0]||'北三骑行室';if(!allowedUsages.value.includes(form.usage))form.usage=allowedUsages.value[0]||'存放车辆'},{immediate:true});
+watch([allowedRooms,allowedUsages],()=>{if(!allowedRooms.value.includes(form.room))form.room=allowedRooms.value[0]||'北三骑行室';if(!allowedUsages.value.includes(form.usage))form.usage=allowedUsages.value[0]||'存取车辆'},{immediate:true});
 const mine=computed(()=>records.value.filter(r=>r.kind===(roomMode.value?'ROOM':'SUGGESTION')))
 const rules={contact:[{required:true,message:'请填写联系方式',trigger:'blur'}],title:[{required:true,message:'请填写活动名称',trigger:'blur'}],description:[{required:true,message:'请填写申请说明',trigger:'blur'}],otherUsage:[{required:true,message:'请填写具体使用方式',trigger:'blur'}]}
 async function load(){error.value='';try{records.value=await api('/riding-requests')}catch(e){error.value=e instanceof Error?e.message:'记录加载失败'}}

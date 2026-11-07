@@ -38,7 +38,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(c -> c
                 .requestMatchers("/api/auth/csrf", "/api/auth/login", "/api/auth/register", "/api/health").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/public/**", "/api/clubs", "/api/activities", "/api/equipment").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/admin/**").hasAnyRole("ADMIN","SUPER_ADMIN")
                 .requestMatchers("/api/**").authenticated().anyRequest().permitAll())
             .exceptionHandling(c -> c.authenticationEntryPoint((req,res,e) -> jsonError(res,401,"请先登录"))
                 .accessDeniedHandler((req,res,e) -> jsonError(res,403,"权限不足或安全令牌已失效，请刷新页面")))

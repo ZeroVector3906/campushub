@@ -75,7 +75,7 @@ class CampusHubIntegrationTest {
     }
     User student,other,admin;Club club;Activity activity;Equipment item;
     @BeforeEach void setup() {
-        student=newUser("test_student","STUDENT");other=newUser("test_other","STUDENT");admin=newUser("test_admin","ADMIN");
+        student=newUser("test_student","STUDENT");other=newUser("test_other","STUDENT");admin=newUser("test_admin","SUPER_ADMIN");
         club=new Club();club.name="测试社团";club.category="学术科技";club.summary="测试简介";club.description="测试详细介绍";club.icon="code";club.color="#547D6A";club.location="A101";club.contact="test@campus.edu";s.clubs().save(club);
         activity=new Activity();activity.clubId=club.id;activity.title="测试活动";activity.category="学术科技";activity.description="活动介绍";activity.location="A101";activity.startsAt=Instant.now().plusSeconds(600);activity.endsAt=Instant.now().plusSeconds(7800);activity.registrationDeadline=activity.startsAt;activity.capacity=1;activity.checkinCode="TEST2026";s.activities().save(activity);
         item=new Equipment();item.name="测试相机";item.category="摄影器材";item.assetCode="TEST001";item.description="测试器材";item.location="A101";item.totalQuantity=2;item.availableQuantity=2;s.equipment().save(item);
@@ -157,7 +157,7 @@ class CampusHubIntegrationTest {
     @Test void disabledUserImmediatelyLosesAccess()throws Exception {
         putAs("/api/admin/users/"+student.id+"/access",Map.of("role","STUDENT","enabled",false),admin.username).andExpect(status().isOk());
         mvc.perform(get("/api/me/dashboard").with(user(student.username))).andExpect(status().isUnauthorized());
-        putAs("/api/admin/users/"+admin.id+"/access",Map.of("role","STUDENT","enabled",true),admin.username).andExpect(status().isBadRequest());
+        putAs("/api/admin/users/"+admin.id+"/access",Map.of("role","STUDENT","enabled",true),admin.username).andExpect(status().isOk());
     }
     @Test void reportsExportChineseCsvAndProtectFormulaCells()throws Exception {
         var result=mvc.perform(get("/api/admin/reports/export?type=equipment").with(user(admin.username))).andExpect(status().isOk()).andExpect(header().string("Content-Disposition","attachment; filename=campushub-equipment.csv")).andReturn();

@@ -19,7 +19,7 @@ public class SeedData implements ApplicationRunner {
             String password=adminPassword.isBlank()&&demo?"CampusHub@2026":adminPassword;
             if(password.length()<12)throw new IllegalStateException("首次启动请设置至少 12 位 ADMIN_PASSWORD，或仅在本地设置 SEED_DEMO=true");
             AuthController.checkPassword(password);
-            var admin=user(adminUsername,"征途俱乐部管理员","admin@campushub.local","ADMIN001",encoder.encode(password));admin.role="ADMIN";s.users().save(admin);
+            var admin=user(adminUsername,"征途俱乐部管理员","admin@campushub.local","ADMIN001",encoder.encode(password));admin.role="SUPER_ADMIN";s.users().save(admin);
         }
         if(demo&&!s.users().existsByUsername("student"))s.users().save(user("student","演示骑友","student@example.test","DEMO001",encoder.encode("CampusHub@2026")));
     }

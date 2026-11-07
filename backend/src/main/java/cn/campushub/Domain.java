@@ -11,6 +11,7 @@ public final class Domain {
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY) public Long id;
         @Column(nullable = false) public Instant createdAt = Instant.now();
     }
+    @org.hibernate.annotations.DynamicUpdate
     @Entity(name = "AppUser") @Table(name = "app_users")
     public static class User extends Base {
         public String username;

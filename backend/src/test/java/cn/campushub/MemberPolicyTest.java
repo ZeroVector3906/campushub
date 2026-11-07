@@ -24,7 +24,7 @@ class MemberPolicyTest {
     @Autowired MockMvc mvc;@Autowired CampusService s;@Autowired MemberPolicy policy;@Autowired ObjectMapper json;@Autowired PasswordEncoder encoder;@Autowired JdbcTemplate jdbc;@Autowired jakarta.persistence.EntityManager entityManager;
     User member,admin;Equipment item;
     @BeforeEach void setup(){
-        member=createUser("member_policy_student","STUDENT");admin=createUser("member_policy_admin","ADMIN");
+        member=createUser("member_policy_student","STUDENT");admin=createUser("member_policy_admin","SUPER_ADMIN");
         item=new Equipment();item.name="身份权限测试器材";item.assetCode="POLICY-001";item.category="骑行装备";item.description="仅用于测试";item.location="测试地点";item.totalQuantity=2;item.availableQuantity=2;s.equipment().save(item);
     }
     User createUser(String name,String role){var u=new User();u.username=name;u.email=name+"@example.test";u.studentNo=name;u.name="测试成员";u.department="测试学院";u.passwordHash=encoder.encode("PolicyPassword2026!");u.role=role;return s.users().save(u);}
@@ -34,6 +34,20 @@ class MemberPolicyTest {
     void approve(String type)throws Exception{putAs("/api/admin/users/"+member.id+"/profile",edit(type,"APPROVED"),admin).andExpect(status().isOk());}
     Map<String,Object> room(String place,String usage){return new HashMap<>(Map.of("kind","ROOM","title","场地权限测试","description","验证身份限制","contact","qa@example.test","room",place,"usage",usage,"startsAt",Instant.now().plusSeconds(3600).toString(),"endsAt",Instant.now().plusSeconds(7200).toString()));}
 
+    @Test void onlySuperAdminCanManageAdministratorsAndAccounts()throws Exception{
+        var normal=createUser("normal_admin","ADMIN");
+        putAs("/api/admin/users/"+member.id+"/access",Map.of("role","ADMIN","enabled",true),normal).andExpect(status().isForbidden());
+        putAs("/api/admin/users/"+admin.id+"/profile",edit("CLUB","APPROVED"),normal).andExpect(status().isForbidden());
+        putAs("/api/admin/users/"+normal.id+"/account",Map.of("username","updated_admin","bio","更新简介","newPassword","ChangedPassword2026!"),normal).andExpect(status().isForbidden());
+        putAs("/api/admin/users/"+normal.id+"/account",Map.of("username","updated_admin","bio","更新简介","newPassword","ChangedPassword2026!"),admin).andExpect(status().isOk()).andExpect(jsonPath("$.username").value("updated_admin"));
+        assertThat(encoder.matches("ChangedPassword2026!",s.users().findById(normal.id).orElseThrow().passwordHash)).isTrue();
+        putAs("/api/admin/users/"+member.id+"/access",Map.of("role","ADMIN","enabled",true),admin).andExpect(status().isOk());
+    }
+    @Test void lastEnabledSuperAdministratorCannotBeDisabledOrDemoted()throws Exception{
+        jdbc.update("UPDATE app_users SET role='ADMIN' WHERE role='SUPER_ADMIN' AND id<>?",admin.id);entityManager.clear();
+        putAs("/api/admin/users/"+admin.id+"/access",Map.of("role","ADMIN","enabled",true),admin).andExpect(status().isBadRequest());
+        putAs("/api/admin/users/"+admin.id+"/access",Map.of("role","SUPER_ADMIN","enabled",false),admin).andExpect(status().isBadRequest());
+    }
     @Test void registrationChoicesCreatePendingApplicationsWithoutGrantingRoomPrivileges()throws Exception{
         for(var type:List.of("CLUB","SOCIETY")){
             var body=new HashMap<>(Map.of("username","join_"+type.toLowerCase(),"password","PolicyPassword2026!","name","申请同学","email",type+"@example.test","studentNo","TEST"+type,"department","测试学院","joinType",type,"contact","qa@example.test","grade","2025级","clubDivision",type.equals("CLUB")?"课程部":""));
@@ -47,12 +61,12 @@ class MemberPolicyTest {
     @Test void societyMembersCanOnlyStoreOrCollectBicyclesInNorthRoom()throws Exception{
         approve("SOCIETY");
         for(var usage:List.of("存车","放车","存放车辆")){
-            var result=postAs("/api/riding-requests",room(MemberPolicy.NORTH,usage),member).andExpect(status().isCreated()).andExpect(jsonPath("$.usage").value("存放车辆")).andReturn();
+            var result=postAs("/api/riding-requests",room(MemberPolicy.NORTH,usage),member).andExpect(status().isCreated()).andExpect(jsonPath("$.usage").value("存取车辆")).andReturn();
             long id=json.readTree(result.getResponse().getContentAsString()).path("id").asLong();
             jdbc.update("UPDATE riding_requests SET usage=? WHERE id=?",usage,id);entityManager.clear();
-            putAs("/api/admin/riding-requests/"+id+"/review",Map.of("status","APPROVED"),admin).andExpect(status().isOk()).andExpect(jsonPath("$.usage").value("存放车辆"));
+            putAs("/api/admin/riding-requests/"+id+"/review",Map.of("status","APPROVED"),admin).andExpect(status().isOk()).andExpect(jsonPath("$.usage").value("存取车辆"));
         }
-        mvc.perform(get("/api/me/dashboard").with(user(member.username))).andExpect(status().isOk()).andExpect(jsonPath("$.member.allowedUsages[0]").value("存放车辆"));
+        mvc.perform(get("/api/me/dashboard").with(user(member.username))).andExpect(status().isOk()).andExpect(jsonPath("$.member.allowedUsages[0]").value("存取车辆"));
         postAs("/api/riding-requests",room(MemberPolicy.NORTH,"拿车"),member).andExpect(status().isCreated());
         for(var usage:List.of("训练","维修","休息"))postAs("/api/riding-requests",room(MemberPolicy.NORTH,usage),member).andExpect(status().isForbidden());
         var other=room(MemberPolicy.NORTH,"其他");other.put("otherUsage","室内活动");postAs("/api/riding-requests",other,member).andExpect(status().isForbidden());

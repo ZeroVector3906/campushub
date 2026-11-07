@@ -13,4 +13,4 @@ export const router=createRouter({history:createWebHashHistory(),scrollBehavior:
  {path:'/login',component:()=>import('./pages/Login.vue'),meta:{title:'加入征途俱乐部&社团'}},
  {path:'/:pathMatch(.*)*',redirect:'/'}
 ]})
-router.beforeEach(async to=>{if(!state.ready)return true;if((to.meta.auth||to.meta.admin)&&!state.user)return {path:'/login',query:{redirect:to.fullPath}};if(to.meta.admin && state.user?.role!=='ADMIN')return '/';return true})
+router.beforeEach(async to=>{if(!state.ready)return true;if((to.meta.auth||to.meta.admin)&&!state.user)return {path:'/login',query:{redirect:to.fullPath}};if(to.meta.admin && !['ADMIN','SUPER_ADMIN'].includes(state.user?.role||''))return '/';return true})

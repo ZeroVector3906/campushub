@@ -18,10 +18,11 @@ import static cn.campushub.ApiViews.v;
 @RestController @RequestMapping("/api")
 public class CampusController {
     @Value("${campushub.seed-demo}") boolean demoEnabled;
+    final AccountAuthority authority; final org.springframework.jdbc.core.JdbcTemplate jdbc;
     final MemberPolicy members;
     final CampusService s; final ApiViews views; final AuthController auth; final PasswordEncoder encoder;
     final FindByIndexNameSessionRepository<? extends Session> sessions;
-    public CampusController(CampusService s,ApiViews views,AuthController auth,PasswordEncoder encoder,FindByIndexNameSessionRepository<? extends Session> sessions,MemberPolicy members) { this.members=members;this.s=s;this.views=views;this.auth=auth;this.encoder=encoder;this.sessions=sessions; }
+    public CampusController(CampusService s,ApiViews views,AuthController auth,PasswordEncoder encoder,FindByIndexNameSessionRepository<? extends Session> sessions,MemberPolicy members,AccountAuthority authority,org.springframework.jdbc.core.JdbcTemplate jdbc) { this.authority=authority;this.jdbc=jdbc;this.members=members;this.s=s;this.views=views;this.auth=auth;this.encoder=encoder;this.sessions=sessions; }
     @GetMapping("/health") Map<String,String> health() { return Map.of("status","UP","application","CampusHub","club","西安欧亚学院征途单车俱乐部&社团"); }
     @GetMapping("/clubs") List<?> clubs() { return s.clubs().findAll().stream().filter(c -> c.active).map(views::club).toList(); }
     private Set<Long> activeClubIds() { return s.clubs().findAll().stream().filter(c -> c.active).map(c -> c.id).collect(java.util.stream.Collectors.toSet()); }
@@ -78,9 +79,9 @@ public class CampusController {
     @GetMapping("/admin/repairs") List<?> adminRepairs() { return s.repairs().findAll().stream().sorted(Comparator.comparing((RepairTicket t)->t.createdAt).reversed()).map(views::repair).toList(); }
     @GetMapping("/admin/users") List<?> adminUsers() { return s.users().findAll().stream().map(members::view).toList(); }
     @PutMapping("/admin/users/{id}/access") @Transactional Map<String,Object> access(Authentication a,@PathVariable Long id,@Valid @RequestBody Requests.UserAccess input) {
-        CampusService.requireStatus(input.role(),"STUDENT","ADMIN");var me=auth.current(a);
-        if(me.id.equals(id)) throw ApiException.bad("不能修改自己的权限或停用自己");
-        var u=s.users().findById(id).orElseThrow(ApiException::missing);u.role=input.role();u.enabled=input.enabled();return ApiViews.user(s.users().save(u));
+        authority.requireSuper(a);jdbc.execute("SELECT pg_advisory_xact_lock(804211)");CampusService.requireStatus(input.role(),"STUDENT","ADMIN","SUPER_ADMIN");var me=auth.current(a);
+
+        var u=s.users().findById(id).orElseThrow(ApiException::missing);if(u.role.equals("SUPER_ADMIN")&&u.enabled&&(!input.enabled()||!input.role().equals("SUPER_ADMIN"))&&s.users().countByRoleAndEnabled("SUPER_ADMIN",true)<=1)throw ApiException.bad("至少保留一名启用的超级管理员");u.role=input.role();u.enabled=input.enabled();return ApiViews.user(s.users().save(u));
     }
     @PostMapping("/admin/clubs") @ResponseStatus(HttpStatus.CREATED) Map<String,Object> createClub(@Valid @RequestBody Requests.ClubInput x) { return views.club(s.saveClub(null,x)); }
     @PutMapping("/admin/clubs/{id}") Map<String,Object> updateClub(@PathVariable Long id,@Valid @RequestBody Requests.ClubInput x) { return views.club(s.saveClub(id,x)); }
