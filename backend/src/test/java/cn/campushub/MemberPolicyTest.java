@@ -21,7 +21,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 @SpringBootTest(properties={"spring.datasource.url=${TEST_DB_URL:jdbc:postgresql://localhost:54329/campushub_test}","campushub.seed-demo=false","campushub.admin-password=TestAdminPassword2026!"})
 @AutoConfigureMockMvc @Transactional
 class MemberPolicyTest {
-    @Autowired MockMvc mvc;@Autowired CampusService s;@Autowired MemberPolicy policy;@Autowired ObjectMapper json;@Autowired PasswordEncoder encoder;@Autowired JdbcTemplate jdbc;
+    @Autowired MockMvc mvc;@Autowired CampusService s;@Autowired MemberPolicy policy;@Autowired ObjectMapper json;@Autowired PasswordEncoder encoder;@Autowired JdbcTemplate jdbc;@Autowired jakarta.persistence.EntityManager entityManager;
     User member,admin;Equipment item;
     @BeforeEach void setup(){
         member=createUser("member_policy_student","STUDENT");admin=createUser("member_policy_admin","ADMIN");
@@ -46,7 +46,13 @@ class MemberPolicyTest {
     }
     @Test void societyMembersCanOnlyStoreOrCollectBicyclesInNorthRoom()throws Exception{
         approve("SOCIETY");
-        postAs("/api/riding-requests",room(MemberPolicy.NORTH,"存车"),member).andExpect(status().isCreated());
+        for(var usage:List.of("存车","放车","存放车辆")){
+            var result=postAs("/api/riding-requests",room(MemberPolicy.NORTH,usage),member).andExpect(status().isCreated()).andExpect(jsonPath("$.usage").value("存放车辆")).andReturn();
+            long id=json.readTree(result.getResponse().getContentAsString()).path("id").asLong();
+            jdbc.update("UPDATE riding_requests SET usage=? WHERE id=?",usage,id);entityManager.clear();
+            putAs("/api/admin/riding-requests/"+id+"/review",Map.of("status","APPROVED"),admin).andExpect(status().isOk()).andExpect(jsonPath("$.usage").value("存放车辆"));
+        }
+        mvc.perform(get("/api/me/dashboard").with(user(member.username))).andExpect(status().isOk()).andExpect(jsonPath("$.member.allowedUsages[0]").value("存放车辆"));
         postAs("/api/riding-requests",room(MemberPolicy.NORTH,"拿车"),member).andExpect(status().isCreated());
         for(var usage:List.of("训练","维修","休息"))postAs("/api/riding-requests",room(MemberPolicy.NORTH,usage),member).andExpect(status().isForbidden());
         var other=room(MemberPolicy.NORTH,"其他");other.put("otherUsage","室内活动");postAs("/api/riding-requests",other,member).andExpect(status().isForbidden());

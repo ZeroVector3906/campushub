@@ -35,7 +35,7 @@ public class RidingRequestController {
         @NotBlank @Size(max=2000) String description,@NotBlank @Size(max=120) String contact,
         @Size(max=40) String room,@Size(max=20) String usage,@Size(max=200) String otherUsage,
         Instant startsAt,Instant endsAt) {}
-    private Map<String,Object> view(RidingRequest r){return ApiViews.v("id",r.id,"user",users.findById(r.userId).map(ApiViews::user).orElse(null),"kind",r.kind,"title",r.title,"description",r.description,"contact",r.contact,"room",r.room,"usage",r.usage,"otherUsage",r.otherUsage,"startsAt",r.startsAt,"endsAt",r.endsAt,"status",r.status,"reviewNote",r.reviewNote,"reviewedAt",r.reviewedAt,"createdAt",r.createdAt);}
+    private Map<String,Object> view(RidingRequest r){return ApiViews.v("id",r.id,"user",users.findById(r.userId).map(ApiViews::user).orElse(null),"kind",r.kind,"title",r.title,"description",r.description,"contact",r.contact,"room",r.room,"usage",MemberPolicy.normalizeUsage(r.usage),"otherUsage",r.otherUsage,"startsAt",r.startsAt,"endsAt",r.endsAt,"status",r.status,"reviewNote",r.reviewNote,"reviewedAt",r.reviewedAt,"createdAt",r.createdAt);}
     @GetMapping("/riding-requests") public List<?> mine(Authentication a){return requests.findByUserIdOrderByCreatedAtDesc(auth.current(a).id).stream().map(this::view).toList();}
     @GetMapping("/admin/riding-requests") public List<?> all(){return requests.findAllByOrderByCreatedAtDesc().stream().map(this::view).toList();}
     @PostMapping("/riding-requests") @ResponseStatus(HttpStatus.CREATED) @Transactional
@@ -45,10 +45,10 @@ public class RidingRequestController {
         r.room="";r.usage="";r.otherUsage="";
         if(x.kind().equals("ROOM")){
             if(!Set.of(MemberPolicy.HEGUANG,"和光文体中心俱乐部",MemberPolicy.NORTH).contains(Objects.toString(x.room(),"")))throw ApiException.bad("请选择有效骑行室");
-            if(!Set.of("训练","存车","拿车","维修","休息","其他").contains(Objects.toString(x.usage(),"")))throw ApiException.bad("请选择使用方式");
+            if(!Set.of("训练","存放车辆","拿车","维修","休息","其他").contains(Objects.toString(MemberPolicy.normalizeUsage(x.usage()),"")))throw ApiException.bad("请选择使用方式");
             if(x.usage().equals("其他")&&(x.otherUsage()==null||x.otherUsage().isBlank()))throw ApiException.bad("请填写其他使用方式");
             if(x.startsAt()==null||x.endsAt()==null||!x.startsAt().isAfter(Instant.now())||!x.endsAt().isAfter(x.startsAt()))throw ApiException.bad("开始时间须晚于当前时间，结束时间须晚于开始时间");
-            r.room=x.room().equals("和光文体中心俱乐部")?MemberPolicy.HEGUANG:x.room();r.usage=x.usage();members.requireRoom(auth.current(a),r.room,r.usage);r.otherUsage=x.usage().equals("其他")?x.otherUsage().trim():"";r.startsAt=x.startsAt();r.endsAt=x.endsAt();
+            r.room=x.room().equals("和光文体中心俱乐部")?MemberPolicy.HEGUANG:x.room();r.usage=MemberPolicy.normalizeUsage(x.usage());members.requireRoom(auth.current(a),r.room,r.usage);r.otherUsage=x.usage().equals("其他")?x.otherUsage().trim():"";r.startsAt=x.startsAt();r.endsAt=x.endsAt();
         }
         return view(requests.save(r));
     }
