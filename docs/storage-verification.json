@@ -1,0 +1,95 @@
+{
+  "base": "https://campushub-2ar9.onrender.com",
+  "completedAt": "2026-11-07T19:15:56.799Z",
+  "passed": 16,
+  "checks": [
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/12/profile",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/dashboard",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/api/riding-requests",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/10/review",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/10/review",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/11/review",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/12/review",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/applications/11/withdraw",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/12/access",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    }
+  ],
+  "aliases": [
+    "存车",
+    "放车",
+    "存放车辆"
+  ],
+  "canonicalUsage": "存放车辆",
+  "fixturesRejected": true,
+  "testAccountDisabled": true
+}
