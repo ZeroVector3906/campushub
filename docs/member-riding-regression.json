@@ -1,0 +1,124 @@
+{
+  "base": "https://campushub-2ar9.onrender.com",
+  "completedAt": "2026-11-07T18:44:33.553Z",
+  "passed": 23,
+  "checks": [
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/dashboard",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/applications/6/review",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/riding-requests",
+      "status": 401
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/riding-requests",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 400
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 400
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/riding-requests",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/4/review",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/riding-requests",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/clubs",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/applications",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/4/review",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/5/review",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/6/review",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/applications/6/withdraw",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/8/access",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    }
+  ],
+  "fixturesRejected": true,
+  "testAccountDisabled": true
+}
