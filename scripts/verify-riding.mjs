@@ -11,8 +11,10 @@ try{
  authenticated=true;
  const suffix=Date.now().toString(36),username='ridingqa_'+suffix;
  const password=crypto.randomBytes(20).toString('hex');
- user=await anonymous.call('/api/auth/register','POST',{username,password,name:'骑行申请验收账号',email:username+'@example.test',studentNo:'QA'+suffix,department:'部署验收'},201);
+ user=await anonymous.call('/api/auth/register','POST',{username,password,name:'骑行申请验收账号',email:username+'@example.test',studentNo:'QA'+suffix,department:'部署验收学院',joinType:'CLUB',contact:'qa@example.test',grade:'2025级'},201);
  await student.call('/api/auth/login','POST',{username,password});
+ application=(await student.call('/api/me/dashboard')).memberships[0];
+ await admin.call('/api/admin/applications/'+application.id+'/review','PUT',{status:'APPROVED',note:'自动验收身份确认'});
  await anonymous.call('/api/riding-requests','GET',undefined,401);
  await student.call('/api/admin/riding-requests','GET',undefined,403);
  const suggestion={kind:'SUGGESTION',title:'验收测试建议（非真实活动）',description:'仅验证申请流程，无需组织活动',contact:'qa@example.test'};
@@ -27,7 +29,7 @@ try{
  await admin.call('/api/admin/riding-requests/'+s.id+'/review','PUT',{status:'APPROVED',note:'验收测试通过'});
  const own=await student.call('/api/riding-requests');if(!own.some(x=>x.id===s.id&&x.reviewNote==='验收测试通过'))throw Error('Review not visible to applicant');
  const clubs=await student.call('/api/clubs');const club=clubs.find(c=>c.name==='征途单车俱乐部');
- application=await student.call('/api/clubs/'+club.id+'/applications','POST',{reason:'验收测试，非真实加入申请',contact:'qa@example.test',grade:'2025级',college:'部署验收学院'},201);
+ if(!application)throw Error('Join application missing');
  const applications=await admin.call('/api/admin/applications');if(!applications.some(x=>x.id===application.id&&x.contact==='qa@example.test'&&x.grade==='2025级'&&x.college==='部署验收学院'))throw Error('Membership details not saved');
 }finally{
  for(const id of fixtures)await admin.call('/api/admin/riding-requests/'+id+'/review','PUT',{status:'REJECTED',note:'自动验收测试已结束，无需安排活动或场地'});

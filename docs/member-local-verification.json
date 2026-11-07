@@ -1,0 +1,234 @@
+{
+  "base": "http://localhost:8080",
+  "completedAt": "2026-11-07T18:37:31.039Z",
+  "passed": 45,
+  "checks": [
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/health",
+      "status": 200
+    },
+    {
+      "check": "new site title",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 403
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/23/profile",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/24/profile",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/users",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/dashboard",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/dashboard",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/equipment",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/loans",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/loans/5/cancel",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/loans",
+      "status": 201
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/loans/6/review",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 403
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/23/profile",
+      "status": 403
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/23/profile",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 403
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/7/review",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/api/loans/6/return",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/loans/6/review",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me",
+      "status": 200
+    },
+    {
+      "check": "member export fields",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/7/review",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/8/review",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/9/review",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/equipment/9",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/dashboard",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/applications/50/withdraw",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/23/access",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/dashboard",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/applications/51/withdraw",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/24/access",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    }
+  ],
+  "fixtureAccountsDisabled": true,
+  "fixtureMembershipsWithdrawn": true,
+  "testRequestsRejected": true,
+  "testEquipmentDisabled": true
+}

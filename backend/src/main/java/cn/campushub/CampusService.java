@@ -30,6 +30,9 @@ public class CampusService {
         if(!club.active || !club.recruiting) throw ApiException.bad("该社团暂未开放招新");
         var m=memberships.findByUserIdAndClubId(user.id,clubId).orElseGet(Membership::new);
         if(Set.of("PENDING","APPROVED").contains(m.status) && m.id!=null) throw ApiException.bad("你已申请或已加入该社团");
+        String type=input.joinType()==null?user.joinType:input.joinType();MemberPolicy.validateType(type);MemberPolicy.validateDivision(type,input.clubDivision());
+        user.joinType=type;user.contact=input.contact().trim();user.grade=input.grade().trim();users.save(user);
+        m.joinType=type;m.clubDivision=Objects.toString(input.clubDivision(),"");
         m.userId=user.id;m.clubId=clubId;m.reason=input.reason();m.contact=input.contact().trim();m.grade=input.grade().trim();m.college=input.college().trim();m.status="PENDING";m.reviewNote="";m.createdAt=Instant.now();m.reviewedAt=null;
         return memberships.save(m);
     }
@@ -42,6 +45,7 @@ public class CampusService {
         requireStatus(input.status(),"APPROVED","REJECTED");
         var m=memberships.lockById(id).orElseThrow(ApiException::missing);
         if(!m.status.equals("PENDING")) throw ApiException.bad("该申请已处理");
+        if(input.status().equals("APPROVED"))MemberPolicy.validateType(m.joinType);
         m.status=input.status();m.reviewNote=note(input.note());m.reviewedAt=Instant.now();return memberships.save(m);
     }
     Registration register(User user,Long activityId) {

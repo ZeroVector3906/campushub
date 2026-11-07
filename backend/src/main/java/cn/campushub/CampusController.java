@@ -18,10 +18,11 @@ import static cn.campushub.ApiViews.v;
 @RestController @RequestMapping("/api")
 public class CampusController {
     @Value("${campushub.seed-demo}") boolean demoEnabled;
+    final MemberPolicy members;
     final CampusService s; final ApiViews views; final AuthController auth; final PasswordEncoder encoder;
     final FindByIndexNameSessionRepository<? extends Session> sessions;
-    public CampusController(CampusService s,ApiViews views,AuthController auth,PasswordEncoder encoder,FindByIndexNameSessionRepository<? extends Session> sessions) { this.s=s;this.views=views;this.auth=auth;this.encoder=encoder;this.sessions=sessions; }
-    @GetMapping("/health") Map<String,String> health() { return Map.of("status","UP","application","CampusHub","club","西安欧亚学院征途单车俱乐部"); }
+    public CampusController(CampusService s,ApiViews views,AuthController auth,PasswordEncoder encoder,FindByIndexNameSessionRepository<? extends Session> sessions,MemberPolicy members) { this.members=members;this.s=s;this.views=views;this.auth=auth;this.encoder=encoder;this.sessions=sessions; }
+    @GetMapping("/health") Map<String,String> health() { return Map.of("status","UP","application","CampusHub","club","西安欧亚学院征途单车俱乐部&社团"); }
     @GetMapping("/clubs") List<?> clubs() { return s.clubs().findAll().stream().filter(c -> c.active).map(views::club).toList(); }
     private Set<Long> activeClubIds() { return s.clubs().findAll().stream().filter(c -> c.active).map(c -> c.id).collect(java.util.stream.Collectors.toSet()); }
     @GetMapping("/activities") List<?> activities() {
@@ -39,7 +40,7 @@ public class CampusController {
             "equipmentCount",s.equipment().findAll().stream().filter(e -> e.active).mapToInt(e -> e.totalQuantity).sum());
     }
     @GetMapping("/me/dashboard") Map<String,Object> mine(Authentication a) {
-        var u=auth.current(a);return v("memberships",s.memberships().findByUserIdOrderByCreatedAtDesc(u.id).stream().map(views::membership).toList(),
+        var u=auth.current(a);return v("member",members.view(u),"memberships",s.memberships().findByUserIdOrderByCreatedAtDesc(u.id).stream().map(views::membership).toList(),
             "registrations",s.registrations().findByUserIdOrderByCreatedAtDesc(u.id).stream().map(views::registration).toList(),
             "loans",s.loans().findByUserIdOrderByCreatedAtDesc(u.id).stream().map(views::loan).toList(),
             "repairs",s.repairs().findByUserIdOrderByCreatedAtDesc(u.id).stream().map(views::repair).toList());
@@ -75,7 +76,7 @@ public class CampusController {
     @GetMapping("/admin/registrations") List<?> adminRegistrations() { return s.registrations().findAll().stream().map(views::registration).toList(); }
     @GetMapping("/admin/loans") List<?> adminLoans() { return s.loans().findAll().stream().sorted(Comparator.comparing((Loan l)->l.createdAt).reversed()).map(views::loan).toList(); }
     @GetMapping("/admin/repairs") List<?> adminRepairs() { return s.repairs().findAll().stream().sorted(Comparator.comparing((RepairTicket t)->t.createdAt).reversed()).map(views::repair).toList(); }
-    @GetMapping("/admin/users") List<?> adminUsers() { return s.users().findAll().stream().map(ApiViews::user).toList(); }
+    @GetMapping("/admin/users") List<?> adminUsers() { return s.users().findAll().stream().map(members::view).toList(); }
     @PutMapping("/admin/users/{id}/access") @Transactional Map<String,Object> access(Authentication a,@PathVariable Long id,@Valid @RequestBody Requests.UserAccess input) {
         CampusService.requireStatus(input.role(),"STUDENT","ADMIN");var me=auth.current(a);
         if(me.id.equals(id)) throw ApiException.bad("不能修改自己的权限或停用自己");

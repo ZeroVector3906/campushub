@@ -12,11 +12,13 @@ public final class Requests {
         @NotBlank @Size(max=50) String name,
         @NotBlank @Email @Size(max=120) String email,
         @NotBlank @Size(max=30) String studentNo,
-        @NotBlank @Size(max=100) String department) {}
+        @NotBlank @Size(max=100) String department,
+        @NotBlank @Pattern(regexp="CLUB|SOCIETY") String joinType, @NotBlank @Size(max=120) String contact,
+        @NotBlank @Size(max=40) String grade, @Size(max=20) String clubDivision) {}
     public record Profile(@NotBlank @Size(max=50) String name, @NotBlank @Email @Size(max=120) String email,
         @NotBlank @Size(max=100) String department, @Size(max=500) String bio) {}
     public record Password(@NotBlank String oldPassword, @NotBlank @Size(min=8,max=64) String newPassword) {}
-    public record Application(@NotBlank @Size(max=1000) String reason, @NotBlank @Size(max=120) String contact, @NotBlank @Size(max=40) String grade, @NotBlank @Size(max=100) String college) {}
+    public record Application(@NotBlank @Size(max=1000) String reason, @NotBlank @Size(max=120) String contact, @NotBlank @Size(max=40) String grade, @NotBlank @Size(max=100) String college, @Pattern(regexp="CLUB|SOCIETY") String joinType, @Size(max=20) String clubDivision) {}
     public record Review(@NotBlank String status, @Size(max=500) String note) {}
     public record Checkin(@NotBlank @Size(max=32) String code) {}
     public record ClubInput(@NotBlank @Size(max=80) String name, @NotBlank @Size(max=30) String category,
@@ -37,5 +39,9 @@ public final class Requests {
         @NotBlank @Size(max=2000) String description, @NotBlank @Size(max=120) String location,
         @NotBlank String priority) {}
     public record RepairProgress(@NotBlank String status, @NotBlank @Size(max=1000) String note) {}
+    public record MemberInput(@NotBlank @Size(max=50) String name, @NotBlank @Email @Size(max=120) String email,
+        @NotBlank @Size(max=30) String studentNo, @NotBlank @Size(max=100) String department,
+        @NotNull @Size(max=120) String contact, @NotNull @Size(max=40) String grade,
+        @NotBlank String joinType, @Size(max=20) String clubDivision, @NotBlank String memberStatus, @Size(max=500) String note) {}
     public record UserAccess(@NotBlank String role, boolean enabled) {}
 }

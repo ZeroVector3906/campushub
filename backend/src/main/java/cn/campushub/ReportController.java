@@ -41,8 +41,8 @@ public class ReportController {
                 for(var a:s.activities().findAll()) rows.add(List.of(a.id,a.title,s.clubs().findById(a.clubId).orElseThrow().name,a.startsAt.atZone(ZoneId.of("Asia/Shanghai")).toString(),a.location,a.capacity,s.registrations().countByActivityId(a.id),s.registrations().findAll().stream().filter(r->r.activityId.equals(a.id)&&r.checkedInAt!=null).count(),label(a.status)));
             }
             case "members" -> {
-                rows.add(List.of("社团","姓名","学号","院系","申请时间","状态"));
-                for(var m:s.memberships().findAll()) {var u=s.users().findById(m.userId).orElseThrow();rows.add(List.of(s.clubs().findById(m.clubId).orElseThrow().name,u.name,u.studentNo,u.department,m.createdAt,label(m.status)));}
+                rows.add(List.of("组织","姓名","学号","院系","年级","联系方式","加入身份","部门","申请时间","状态"));
+                for(var m:s.memberships().findAll()) {var u=s.users().findById(m.userId).orElseThrow();rows.add(List.of(s.clubs().findById(m.clubId).orElseThrow().name,u.name,u.studentNo,u.department,m.grade,m.contact,m.joinType.equals("CLUB")?"俱乐部":m.joinType.equals("SOCIETY")?"社团":"待分类",m.clubDivision,m.createdAt,label(m.status)));}
             }
             case "equipment" -> {
                 rows.add(List.of("资产编号","器材名称","类别","存放地点","总库存","可用库存","在借数量","累计申请次数"));

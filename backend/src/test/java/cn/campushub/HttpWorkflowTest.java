@@ -44,8 +44,10 @@ class HttpWorkflowTest {
         Long clubId=null,activityId=null,equipmentId=null;
         try {
             admin.login("admin","TestAdminPassword2026!");
-            for(var name:List.of(firstName,secondName)) first.call("/api/auth/register","POST",Map.of("username",name,"password","WorkflowPassword2026!","name","验收同学","studentNo",name,"email",name+"@test.local","department","测试学院"),201);
+            for(var name:List.of(firstName,secondName)) first.call("/api/auth/register","POST",Map.of("username",name,"password","WorkflowPassword2026!","name","验收同学","studentNo",name,"email",name+"@test.local","department","测试学院","joinType","CLUB","contact","qa@example.test","grade","2025级"),201);
             first.login(firstName,"WorkflowPassword2026!");second.login(secondName,"WorkflowPassword2026!");secondSession.login(firstName,"WorkflowPassword2026!");
+            var primary=first.call("/api/me/dashboard","GET",null,200).path("memberships").get(0);
+            admin.call("/api/admin/applications/"+primary.path("id").asLong()+"/review","PUT",Map.of("status","APPROVED","note","测试身份确认"),200);
             var club=admin.call("/api/admin/clubs","POST",Map.of("name","HTTP 验收社团 "+suffix,"category","学术科技","summary","真实接口验收","description","完整业务流程验收","icon","code","color","#547D6A","location","测试楼101","contact","qa@test.local","recruiting",true,"active",true),201);clubId=club.path("id").asLong();
             var application=first.call("/api/clubs/"+clubId+"/applications","POST",Map.of("reason","希望参加项目共创","contact","test@example.test","grade","2025级","college","信息工程学院"),201);
             admin.call("/api/admin/applications/"+application.path("id").asLong()+"/review","PUT",Map.of("status","APPROVED","note","欢迎加入"),200);

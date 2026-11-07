@@ -22,6 +22,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 class CampusHubIntegrationTest {
     @Autowired MockMvc mvc;
     @Autowired CampusService s;
+    @Autowired MemberPolicy members;
     @Autowired ObjectMapper json;
     @Autowired PasswordEncoder encoder;
     @Autowired org.springframework.jdbc.core.JdbcTemplate jdbc;
@@ -78,8 +79,9 @@ class CampusHubIntegrationTest {
         club=new Club();club.name="测试社团";club.category="学术科技";club.summary="测试简介";club.description="测试详细介绍";club.icon="code";club.color="#547D6A";club.location="A101";club.contact="test@campus.edu";s.clubs().save(club);
         activity=new Activity();activity.clubId=club.id;activity.title="测试活动";activity.category="学术科技";activity.description="活动介绍";activity.location="A101";activity.startsAt=Instant.now().plusSeconds(600);activity.endsAt=Instant.now().plusSeconds(7800);activity.registrationDeadline=activity.startsAt;activity.capacity=1;activity.checkinCode="TEST2026";s.activities().save(activity);
         item=new Equipment();item.name="测试相机";item.category="摄影器材";item.assetCode="TEST001";item.description="测试器材";item.location="A101";item.totalQuantity=2;item.availableQuantity=2;s.equipment().save(item);
+        for(var u:List.of(student,other)){var m=new Membership();m.userId=u.id;m.clubId=members.primaryClub().orElseThrow().id;m.reason="测试准备的俱乐部成员";m.status="APPROVED";m.joinType="CLUB";s.memberships().save(m);}
     }
-    User newUser(String username,String role) {var u=new User();u.username=username;u.name=username;u.passwordHash=encoder.encode("Password2026!");u.email=username+"@campus.edu";u.studentNo=username;u.department="测试学院";u.role=role;return s.users().save(u);}
+    User newUser(String username,String role) {var u=new User();u.username=username;u.name=username;u.passwordHash=encoder.encode("Password2026!");u.email=username+"@campus.edu";u.studentNo=username;u.department="测试学院";u.role=role;u.joinType="CLUB";return s.users().save(u);}
     ResultActions postAs(String path,Object body,String username)throws Exception{return mvc.perform(post(path).with(user(username)).with(csrf()).contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsBytes(body)));}
     ResultActions putAs(String path,Object body,String username)throws Exception{return mvc.perform(put(path).with(user(username)).with(csrf()).contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsBytes(body)));}
     @Test void publicDataDoesNotExposeSecrets()throws Exception {
@@ -93,7 +95,7 @@ class CampusHubIntegrationTest {
         mvc.perform(get("/api/admin/users").with(user(admin.username))).andExpect(status().isOk()).andExpect(jsonPath("$[0].passwordHash").doesNotExist());
     }
     @Test void registrationEncryptsPasswordAndCannotChooseRole()throws Exception {
-        var body=Map.of("username","fresh_user","password","Password2026!","name","新同学","email","fresh@campus.edu","studentNo","20260001","department","计算机学院","role","ADMIN");
+        var body=Map.of("username","fresh_user","password","Password2026!","name","新同学","email","fresh@campus.edu","studentNo","20260001","department","计算机学院","role","ADMIN","joinType","CLUB","contact","qa@example.test","grade","2025级");
         mvc.perform(post("/api/auth/register").with(csrf()).contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsBytes(body))).andExpect(status().isCreated()).andExpect(jsonPath("$.role").value("STUDENT"));
         var u=s.users().findByUsername("fresh_user").orElseThrow();assertThat(u.passwordHash).isNotEqualTo("Password2026!");assertThat(encoder.matches("Password2026!",u.passwordHash)).isTrue();
         mvc.perform(post("/api/auth/login").with(csrf()).contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsBytes(Map.of("username","fresh_user","password","Password2026!")))).andExpect(status().isOk()).andExpect(jsonPath("$.name").value("新同学"));

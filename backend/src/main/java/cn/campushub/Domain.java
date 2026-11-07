@@ -20,6 +20,7 @@ public final class Domain {
         public String studentNo;
         public String department;
         public String bio = "";
+        public String joinType = "UNASSIGNED", contact = "", grade = "";
         public String role = "STUDENT";
         public boolean enabled = true;
     }
@@ -42,6 +43,7 @@ public final class Domain {
         public Long clubId;
         public String reason;
         public String contact="", grade="", college="";
+        public String joinType="UNASSIGNED", clubDivision="";
         public String status = "PENDING";
         public String reviewNote = "";
         public Instant reviewedAt;

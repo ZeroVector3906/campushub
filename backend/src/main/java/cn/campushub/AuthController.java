@@ -20,6 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RestController @RequestMapping("/api/auth")
 public class AuthController {
+    private final CampusService service;
+    private final MemberPolicy members;
     private final UserRepository users;
     private final AuthenticationManager manager;
     private final PasswordEncoder encoder;
@@ -28,7 +30,8 @@ public class AuthController {
     private final Map<String,Attempt> attempts=new ConcurrentHashMap<>();
     private record Attempt(int count, Instant since) {}
     public AuthController(UserRepository users, AuthenticationManager manager, PasswordEncoder encoder,
-                          SecurityContextRepository contexts, CsrfTokenRepository csrf) {
+                          SecurityContextRepository contexts, CsrfTokenRepository csrf,CampusService service,MemberPolicy members) {
+        this.service=service;this.members=members;
         this.users=users; this.manager=manager; this.encoder=encoder; this.contexts=contexts; this.csrf=csrf;
     }
     @GetMapping("/csrf") Map<String,String> csrf(CsrfToken token) {
@@ -37,11 +40,14 @@ public class AuthController {
     @PostMapping("/register") @ResponseStatus(HttpStatus.CREATED) @Transactional
     Map<String,Object> register(@Valid @RequestBody Requests.Register input) {
         checkPassword(input.password());
+        MemberPolicy.validateType(input.joinType());MemberPolicy.validateDivision(input.joinType(),input.clubDivision());
         if(users.existsByUsername(input.username().toLowerCase(Locale.ROOT)) || users.existsByEmail(input.email().toLowerCase(Locale.ROOT)))
             throw ApiException.bad("用户名或邮箱已被使用");
         var u=new User(); u.username=input.username().toLowerCase(Locale.ROOT); u.passwordHash=encoder.encode(input.password());
         u.name=input.name().trim(); u.email=input.email().toLowerCase(Locale.ROOT).trim(); u.studentNo=input.studentNo().trim(); u.department=input.department().trim();
-        return ApiViews.user(users.save(u));
+        u.joinType=input.joinType();u.contact=input.contact().trim();u.grade=input.grade().trim();users.save(u);
+        members.primaryClub().filter(c->c.recruiting).ifPresent(c->service.apply(u,c.id,new Requests.Application("注册时申请加入"+(u.joinType.equals("CLUB")?"俱乐部":"社团"),u.contact,u.grade,u.department,u.joinType,input.clubDivision())));
+        return members.view(u);
     }
     @PostMapping("/login") Map<String,Object> login(@Valid @RequestBody Requests.Login input, HttpServletRequest req, HttpServletResponse res) {
         String key=req.getRemoteAddr(); var now=Instant.now();

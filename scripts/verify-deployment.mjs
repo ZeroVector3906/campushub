@@ -29,7 +29,7 @@ const clubMap=new Map([[clubs[0].id,clubs[0].id]]);
 const illustration=await anon.raw('/images/cycling.svg');if(illustration.status!==200||!illustration.text.includes('<svg'))throw Error('Cycling illustration missing');
 checks.push({check:'Zhengtu identity and cycling asset',status:200});
 const suffix=Date.now().toString(36),username='cloudqa_'+suffix,password=crypto.randomBytes(20).toString('hex');
-const user=await student.call('/api/auth/register','POST',{username,password,name:'云端验收测试账号',email:username+'@example.test',studentNo:'QA'+suffix,department:'部署验收'},201);
+const user=await student.call('/api/auth/register','POST',{username,password,name:'云端验收测试账号',email:username+'@example.test',studentNo:'QA'+suffix,department:'部署验收',joinType:'CLUB',contact:'qa@example.test',grade:'2025级'},201);
 await student.call('/api/auth/login','POST',{username,password});
 let qaActivity,qaEquipment;
 try {
@@ -37,7 +37,7 @@ try {
   await anon.call('/api/admin/users','GET',undefined,401);
   const noCsrf=await student.raw('/api/clubs/'+clubMap.values().next().value+'/applications','POST',{reason:'CSRF check'});if(noCsrf.status!==403)throw Error('CSRF protection failed');
   checks.push({check:'CSRF rejection',status:noCsrf.status});
-  const application=await student.call('/api/clubs/'+clubMap.values().next().value+'/applications','POST',{reason:'云端部署验收，仅测试操作',contact:'qa@example.test',grade:'2025级',college:'部署验收'},201);
+  const application=(await student.call('/api/me/dashboard')).memberships.find(m=>m.club.id===clubs[0].id);if(!application||application.status!=='PENDING')throw Error('Registration join application missing');
   await admin.call('/api/admin/applications/'+application.id+'/review','PUT',{status:'APPROVED',note:'云端验收'});
   const now=Date.now(),stamp=ms=>new Date(ms).toISOString();
   const body={clubId:clubMap.values().next().value,title:'征途骑行验收活动（已完成后取消）'+suffix,category:'骑行训练',description:'仅供部署接口验收，无实际活动。',location:'云端测试环境',startsAt:stamp(now+120000),endsAt:stamp(now+3600000),registrationDeadline:stamp(now+120000),capacity:1,checkinCode:crypto.randomBytes(8).toString('hex'),featured:false,status:'PUBLISHED'};

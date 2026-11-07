@@ -19,7 +19,7 @@ public class ApiViews {
     }
     static Map<String,Object> user(User u) {
         return v("id",u.id,"username",u.username,"name",u.name,"email",u.email,"studentNo",u.studentNo,"department",u.department,
-                "bio",u.bio,"role",u.role,"enabled",u.enabled,"createdAt",u.createdAt);
+                "bio",u.bio,"joinType",u.joinType,"contact",u.contact,"grade",u.grade,"role",u.role,"enabled",u.enabled,"createdAt",u.createdAt);
     }
     Map<String,Object> club(Club c) {
         return v("id",c.id,"name",c.name,"category",c.category,"summary",c.summary,"description",c.description,"icon",c.icon,"color",c.color,
@@ -35,7 +35,7 @@ public class ApiViews {
     }
     Map<String,Object> membership(Membership m) {
         return v("id",m.id,"user",users.findById(m.userId).map(ApiViews::user).orElse(null),"club",clubs.findById(m.clubId).map(this::club).orElse(null),
-                "reason",m.reason,"contact",m.contact,"grade",m.grade,"college",m.college,"status",m.status,"reviewNote",m.reviewNote,"createdAt",m.createdAt,"reviewedAt",m.reviewedAt);
+                "joinType",m.joinType,"clubDivision",m.clubDivision,"reason",m.reason,"contact",m.contact,"grade",m.grade,"college",m.college,"status",m.status,"reviewNote",m.reviewNote,"createdAt",m.createdAt,"reviewedAt",m.reviewedAt);
     }
     Map<String,Object> registration(Registration r) {
         return v("id",r.id,"user",users.findById(r.userId).map(ApiViews::user).orElse(null),"activity",activities.findById(r.activityId).map(a -> activity(a,false)).orElse(null),

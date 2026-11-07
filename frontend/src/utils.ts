@@ -1,5 +1,5 @@
 import type { Activity } from './types'
-export const statusLabels:Record<string,string>={PENDING:'待审核',APPROVED:'已通过',REJECTED:'已驳回',WITHDRAWN:'已退出',PUBLISHED:'已发布',CANCELLED:'已取消',RETURN_PENDING:'待验收归还',RETURNED:'已归还',OPEN:'待受理',PROCESSING:'维修中',RESOLVED:'已修复',CLOSED:'已关闭',STUDENT:'学生',ADMIN:'管理员',LOW:'低',NORMAL:'普通',HIGH:'紧急'}
+export const statusLabels:Record<string,string>={NONE:'未申请',PENDING:'待审核',APPROVED:'已通过',REJECTED:'已驳回',WITHDRAWN:'已退出',PUBLISHED:'已发布',CANCELLED:'已取消',RETURN_PENDING:'待验收归还',RETURNED:'已归还',OPEN:'待受理',PROCESSING:'维修中',RESOLVED:'已修复',CLOSED:'已关闭',STUDENT:'学生',ADMIN:'管理员',LOW:'低',NORMAL:'普通',HIGH:'紧急'}
 export const label=(status:string)=>statusLabels[status]||status
 export const statusType=(s:string):'success'|'warning'|'danger'|'info'|'primary'=>['APPROVED','RETURNED','RESOLVED','PUBLISHED'].includes(s)?'success':['PENDING','RETURN_PENDING','OPEN'].includes(s)?'warning':['REJECTED','HIGH'].includes(s)?'danger':['PROCESSING'].includes(s)?'primary':'info'
 export function date(value?:string,full=false){if(!value)return '—';return new Intl.DateTimeFormat('zh-CN',{month:'2-digit',day:'2-digit',...(full?{year:'numeric',hour:'2-digit',minute:'2-digit'}:{})}).format(new Date(value))}
