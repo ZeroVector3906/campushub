@@ -1,0 +1,119 @@
+{
+  "base": "http://localhost:8080",
+  "completedAt": "2026-11-07T17:45:32.038Z",
+  "passed": 22,
+  "checks": [
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/riding-requests",
+      "status": 401
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/riding-requests",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 400
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/riding-requests",
+      "status": 400
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/riding-requests",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/1/review",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/riding-requests",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/clubs",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/clubs/9/applications",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/applications",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/1/review",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/2/review",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/riding-requests/3/review",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/applications/47/withdraw",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/20/access",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    }
+  ],
+  "fixturesRejected": true,
+  "testAccountDisabled": true
+}
