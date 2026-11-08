@@ -1,0 +1,103 @@
+{
+  "base": "http://localhost:8080",
+  "completedAt": "2026-11-07T20:32:30.232Z",
+  "checks": [
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "status": 201
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/28/access",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/reports",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/28/access",
+      "status": 403
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/1/profile",
+      "status": 403
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/28/profile",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/28/account",
+      "status": 403
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/28/account",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me",
+      "status": 401
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/users",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/1/access",
+      "status": 400
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/dashboard",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/dashboard",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/applications/55/withdraw",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/28/access",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    }
+  ],
+  "passed": 19,
+  "fixtureDisabled": true
+}
