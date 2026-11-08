@@ -1,7 +1,15 @@
+/// <reference types="vite/client" />
 import { ElMessage } from 'element-plus'
 let csrfToken = ''
 export const connectionEvents=new EventTarget()
 export class ApiError extends Error { constructor(public status:number,message:string){super(message)} }
+// A public HTML request can trigger a host wake before JSON API readiness is checked.
+export async function wakeService(){
+ const url=import.meta.env.VITE_SERVICE_WAKE_URL
+ if(!url)return
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000)
+ try{const response=await fetch(url,{method:'GET',mode:'no-cors',credentials:'omit',cache:'no-store',headers:{Accept:'text/html'},signal:controller.signal});await response.body?.cancel()}catch{/* The health request below determines whether the service is actually ready. */}finally{clearTimeout(timer)}
+}
 export function resetCsrf(){csrfToken=''}
 // Bound every request, including response-body reads. Never replay a write automatically.
 async function request(path:string,options:RequestInit={},timeoutMs=12000):Promise<Response>{

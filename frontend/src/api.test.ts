@@ -1,9 +1,9 @@
 // @vitest-environment happy-dom
 import {beforeEach,afterEach,it,expect,vi} from 'vitest'
-import {api,resetCsrf,connectionEvents} from './api'
+import {api,resetCsrf,connectionEvents,wakeService} from './api'
 vi.mock('element-plus',()=>({ElMessage:{error:vi.fn(),success:vi.fn()}}))
 beforeEach(()=>{resetCsrf();vi.useFakeTimers()})
-afterEach(()=>{vi.unstubAllGlobals();vi.useRealTimers()})
+afterEach(()=>{vi.unstubAllGlobals();vi.unstubAllEnvs();vi.useRealTimers()})
 it('HTML startup responses are never accepted as API success',async()=>{vi.stubGlobal('fetch',vi.fn(async()=>new Response('<html>Starting</html>',{headers:{'Content-Type':'text/html'}})));await expect(api('/health','GET',undefined,true)).rejects.toMatchObject({status:503})})
 it('a hung request aborts within 12 seconds',async()=>{vi.stubGlobal('fetch',vi.fn((_url,init)=>new Promise((_,reject)=>init.signal.addEventListener('abort',()=>reject(new Error('aborted'))))));const result=expect(api('/health','GET',undefined,true)).rejects.toMatchObject({status:0});await vi.advanceTimersByTimeAsync(12000);await result})
 it('a failed write is not automatically replayed',async()=>{const fetch=vi.fn().mockResolvedValueOnce(new Response('{"token":"test"}',{headers:{'Content-Type':'application/json'}})).mockRejectedValueOnce(new Error('offline'));vi.stubGlobal('fetch',fetch);await expect(api('/activities/1/registrations','POST',undefined,true)).rejects.toMatchObject({status:0});expect(fetch).toHaveBeenCalledTimes(2);expect(fetch.mock.calls[1]![1].method).toBe('POST')})
@@ -12,3 +12,6 @@ it('401 remains distinguishable from a network failure',async()=>{vi.stubGlobal(
 it('startup readiness has a separate bounded wait while ordinary requests stay short',async()=>{vi.stubGlobal('fetch',vi.fn((_url,init)=>new Promise((_,reject)=>init.signal.addEventListener('abort',()=>reject(new Error('aborted'))))));const result=expect(api('/health','GET',undefined,true,45000)).rejects.toMatchObject({status:0});await vi.advanceTimersByTimeAsync(12000);expect(vi.mocked(fetch).mock.calls[0]![1]!.signal!.aborted).toBe(false);await vi.advanceTimersByTimeAsync(33000);await result})
 
 it('interactive connection failures request read-only recovery, quiet startup failures do not recurse',async()=>{vi.stubGlobal('fetch',vi.fn().mockRejectedValue(new Error('offline')));const listener=vi.fn();connectionEvents.addEventListener('unavailable',listener);try{await expect(api('/activities','GET',undefined,false)).rejects.toMatchObject({status:0});expect(listener).toHaveBeenCalledTimes(1);await expect(api('/health','GET',undefined,true)).rejects.toMatchObject({status:0});expect(listener).toHaveBeenCalledTimes(1)}finally{connectionEvents.removeEventListener('unavailable',listener)}})
+
+it('host wake is a credential-free HTML read and never consumes it as API data',async()=>{vi.stubEnv('VITE_SERVICE_WAKE_URL','/_service-wake');const fetch=vi.fn(async()=>new Response('<html>Starting</html>',{headers:{'Content-Type':'text/html'}}));vi.stubGlobal('fetch',fetch);await wakeService();expect(fetch).toHaveBeenCalledExactlyOnceWith('/_service-wake',expect.objectContaining({method:'GET',mode:'no-cors',credentials:'omit',cache:'no-store',headers:{Accept:'text/html'}}))})
+it('local builds without a wake URL make no extra host request',async()=>{vi.stubEnv('VITE_SERVICE_WAKE_URL','');const fetch=vi.fn();vi.stubGlobal('fetch',fetch);await wakeService();expect(fetch).not.toHaveBeenCalled()})

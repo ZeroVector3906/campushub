@@ -1,5 +1,5 @@
 import { reactive, computed } from 'vue'
-import { api, resetCsrf, ApiError } from './api'
+import { api, resetCsrf, ApiError, wakeService } from './api'
 import type { User,Club,Activity,Equipment,Row,Dashboard } from './types'
 export const state=reactive({user:null as User|null,clubs:[] as Club[],activities:[] as Activity[],equipment:[] as Equipment[],overview:{} as Row,mine:{memberships:[],registrations:[],loans:[],repairs:[]} as Dashboard,ready:false,error:'',busy:false,publicLoaded:false,connecting:false})
 export const isAdmin=computed(()=>['ADMIN','SUPER_ADMIN'].includes(state.user?.role||''))
@@ -18,6 +18,7 @@ export function initialize():Promise<void>{
  state.connecting=true;state.error=''
  initialization=(async()=>{try{
    // A cold host needs a longer readiness window than an ordinary form request.
+   await wakeService()
    await api('/health','GET',undefined,true,45000)
    const results=await Promise.allSettled([refreshPublic(),api<User>('/auth/me','GET',undefined,true)])
    const auth=results[1]
