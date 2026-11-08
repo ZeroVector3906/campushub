@@ -66,8 +66,8 @@ class MemberPolicyTest {
             jdbc.update("UPDATE riding_requests SET usage=? WHERE id=?",usage,id);entityManager.clear();
             putAs("/api/admin/riding-requests/"+id+"/review",Map.of("status","APPROVED"),admin).andExpect(status().isOk()).andExpect(jsonPath("$.usage").value("存取车辆"));
         }
-        mvc.perform(get("/api/me/dashboard").with(user(member.username))).andExpect(status().isOk()).andExpect(jsonPath("$.member.allowedUsages[0]").value("存取车辆"));
-        postAs("/api/riding-requests",room(MemberPolicy.NORTH,"拿车"),member).andExpect(status().isCreated());
+        mvc.perform(get("/api/me/dashboard").with(user(member.username))).andExpect(status().isOk()).andExpect(jsonPath("$.member.allowedUsages[0]").value("存取车辆")).andExpect(jsonPath("$.member.allowedUsages[1]").doesNotExist());
+        postAs("/api/riding-requests",room(MemberPolicy.NORTH,"拿车"),member).andExpect(status().isBadRequest());
         for(var usage:List.of("训练","维修","休息"))postAs("/api/riding-requests",room(MemberPolicy.NORTH,usage),member).andExpect(status().isForbidden());
         var other=room(MemberPolicy.NORTH,"其他");other.put("otherUsage","室内活动");postAs("/api/riding-requests",other,member).andExpect(status().isForbidden());
         postAs("/api/riding-requests",room(MemberPolicy.HEGUANG,"存车"),member).andExpect(status().isForbidden());
@@ -76,6 +76,7 @@ class MemberPolicyTest {
     @Test void changingMembershipUpdatesAccessButPreservesPasswordRoleHistoryAndReturns()throws Exception{
         var originalHash=member.passwordHash;approve("CLUB");
         postAs("/api/riding-requests",room(MemberPolicy.HEGUANG,"维修"),member).andExpect(status().isCreated());
+        postAs("/api/riding-requests",room(MemberPolicy.HEGUANG,"拿车"),member).andExpect(status().isBadRequest());
         var r=postAs("/api/loans",Map.of("equipmentId",item.id,"quantity",1,"purpose","测试借用","dueDate",LocalDate.now().plusDays(1).toString()),member).andExpect(status().isCreated()).andReturn();
         long loanId=json.readTree(r.getResponse().getContentAsString()).path("id").asLong();
         putAs("/api/admin/loans/"+loanId+"/review",Map.of("status","APPROVED"),admin).andExpect(status().isOk());

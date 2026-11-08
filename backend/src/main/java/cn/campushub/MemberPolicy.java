@@ -21,7 +21,7 @@ public class MemberPolicy {
     public String approvedType(User u){return membership(u.id).filter(m->m.status.equals("APPROVED")).map(m->m.joinType).orElse("UNASSIGNED");}
     public List<String> rooms(User u){if(Set.of("ADMIN","SUPER_ADMIN").contains(u.role)||approvedType(u).equals("CLUB"))return List.of(HEGUANG,NORTH);return approvedType(u).equals("SOCIETY")?List.of(NORTH):List.of();}
     public static String normalizeUsage(String usage){return "存车".equals(usage)||"放车".equals(usage)||"存放车辆".equals(usage)?"存取车辆":usage;}
-    public List<String> usages(User u){if(Set.of("ADMIN","SUPER_ADMIN").contains(u.role)||approvedType(u).equals("CLUB"))return List.of("训练","存取车辆","拿车","维修","休息","其他");return approvedType(u).equals("SOCIETY")?List.of("存取车辆","拿车"):List.of();}
+    public List<String> usages(User u){if(Set.of("ADMIN","SUPER_ADMIN").contains(u.role)||approvedType(u).equals("CLUB"))return List.of("训练","存取车辆","维修","休息","其他");return approvedType(u).equals("SOCIETY")?List.of("存取车辆"):List.of();}
     public void requireRoom(User u,String room,String usage){if(!rooms(u).contains(room)||!usages(u).contains(normalizeUsage(usage)))throw new ApiException(HttpStatus.FORBIDDEN,"当前成员身份不允许此场所或用途；社团成员仅可在北三骑行室存取车辆，特殊情况请提前联系管理员");}
     public static void validateType(String type){if(!Set.of("CLUB","SOCIETY").contains(Objects.toString(type,"")))throw ApiException.bad("请选择加入俱乐部或社团");}
     public static void validateDivision(String type,String division){if(!Set.of("","课程部","活动部","宣传部").contains(Objects.toString(division,"")))throw ApiException.bad("俱乐部部门无效");if(!type.equals("CLUB")&&division!=null&&!division.isBlank())throw ApiException.bad("社团成员不分配俱乐部部门");}
@@ -32,7 +32,7 @@ public class MemberPolicy {
         String type=m.filter(x->x.status.equals("APPROVED")).map(x->x.joinType).orElse("UNASSIGNED");
         boolean club=Set.of("ADMIN","SUPER_ADMIN").contains(u.role)||type.equals("CLUB"),society=type.equals("SOCIETY");
         out.put("canBorrowEquipment",u.enabled);out.put("allowedRooms",club?List.of(HEGUANG,NORTH):society?List.of(NORTH):List.of());
-        out.put("allowedUsages",club?List.of("训练","存取车辆","拿车","维修","休息","其他"):society?List.of("存取车辆","拿车"):List.of());return out;
+        out.put("allowedUsages",club?List.of("训练","存取车辆","维修","休息","其他"):society?List.of("存取车辆"):List.of());return out;
     }
     public User save(Long id,Requests.MemberInput x){
         var u=users.findById(id).orElseThrow(ApiException::missing);
