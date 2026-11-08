@@ -19,10 +19,10 @@ function submitSearch(){router.push({path:'/clubs',query:{q:search.value.trim()}
 watch(()=>route.fullPath,closePanels)
 let reconnectTimer:ReturnType<typeof setTimeout>|undefined
 let reconnectAttempts=0
-async function connect(){clearTimeout(reconnectTimer);await initialize();if(state.error&&reconnectAttempts++<3)reconnectTimer=setTimeout(connect,15000)}
+async function connect(){clearTimeout(reconnectTimer);await initialize();if(!state.error){if((route.meta.auth||route.meta.admin)&&!state.user)await router.replace({path:'/login',query:{redirect:route.fullPath}});else if(route.meta.admin&&!isAdmin.value)await router.replace('/')}if(state.error&&reconnectAttempts++<3)reconnectTimer=setTimeout(connect,15000)}
 function reconnectAfterFailure(){if(!state.connecting){reconnectAttempts=0;void connect()}}
 onUnmounted(()=>{clearTimeout(reconnectTimer);connectionEvents.removeEventListener('unavailable',reconnectAfterFailure)})
-onMounted(async()=>{connectionEvents.addEventListener('unavailable',reconnectAfterFailure);await connect();if((route.meta.auth||route.meta.admin)&&!state.user)router.replace({path:'/login',query:{redirect:route.fullPath}});else if(route.meta.admin&&!isAdmin.value)router.replace('/')})
+onMounted(()=>{connectionEvents.addEventListener('unavailable',reconnectAfterFailure);void connect()})
 </script>
 
 <template>

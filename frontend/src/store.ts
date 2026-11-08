@@ -22,7 +22,7 @@ export function initialize():Promise<void>{
    const results=await Promise.allSettled([refreshPublic(),api<User>('/auth/me','GET',undefined,true)])
    const auth=results[1]
    if(auth.status==='fulfilled')state.user=auth.value
-   else if(auth.reason instanceof ApiError&&auth.reason.status===401)state.user=null
+   else if(auth.reason instanceof ApiError&&auth.reason.status===401){state.user=null;state.mine={memberships:[],registrations:[],loans:[],repairs:[]}}
    else throw auth.reason
    if(results[0].status==='rejected')throw results[0].reason
    await refreshMine()
