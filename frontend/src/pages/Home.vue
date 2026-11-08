@@ -8,6 +8,7 @@ import {clubProfile as profile} from '../clubProfile'
 import MemberComparison from '../components/MemberComparison.vue'
 import Icon from '../components/Icon.vue'
 import ActivityCard from '../components/ActivityCard.vue'
+import ImmersiveField from '../components/ImmersiveField.vue'
 const router=useRouter(),guide=ref(false)
 const upcoming=computed(()=>state.activities.filter(a=>a.status==='PUBLISHED'&&new Date(a.endsAt).getTime()>Date.now()).sort((a,b)=>+new Date(a.startsAt)-+new Date(b.startsAt)))
 const stats=computed(()=>[{label:'同行骑友',value:state.overview.memberCount,unit:'人'},{label:'骑行与训练',value:state.overview.activityCount,unit:'场'},{label:'热爱，从这里开始',value:profile.founded,unit:'年'},{label:'共享骑行器材',value:state.overview.equipmentCount,unit:'件'}])
@@ -16,7 +17,7 @@ const services=[{path:'/rooms',icon:'bike',title:'骑行室使用',text:'存取�
 
 <template>
  <div class="page-content zt-home">
-  <section class="zt-hero" aria-labelledby="home-title">
+  <section class="zt-hero" aria-labelledby="home-title"><ImmersiveField/>
    <div class="zt-hero-copy">
     <div class="zt-kicker">{{brand.fullName}}</div>
     <span class="zt-pill">2013 年启程 · 与热爱同行</span>
