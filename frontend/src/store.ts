@@ -17,6 +17,8 @@ export function initialize():Promise<void>{
  if(initialization)return initialization
  state.connecting=true;state.error=''
  initialization=(async()=>{try{
+   // A cold host needs a longer readiness window than an ordinary form request.
+   await api('/health','GET',undefined,true,45000)
    const results=await Promise.allSettled([refreshPublic(),api<User>('/auth/me','GET',undefined,true)])
    const auth=results[1]
    if(auth.status==='fulfilled')state.user=auth.value

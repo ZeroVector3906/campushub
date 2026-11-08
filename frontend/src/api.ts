@@ -3,8 +3,8 @@ let csrfToken = ''
 export class ApiError extends Error { constructor(public status:number,message:string){super(message)} }
 export function resetCsrf(){csrfToken=''}
 // Bound every request, including response-body reads. Never replay a write automatically.
-async function request(path:string,options:RequestInit={}):Promise<Response>{
-  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000)
+async function request(path:string,options:RequestInit={},timeoutMs=12000):Promise<Response>{
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs)
   try{
     const response=await fetch('/api'+path,{...options,credentials:'same-origin',cache:'no-store',signal:controller.signal})
     const text=await response.text()
@@ -15,10 +15,10 @@ async function request(path:string,options:RequestInit={}):Promise<Response>{
   }catch(error){if(error instanceof ApiError)throw error;throw new ApiError(0,controller.signal.aborted?'连接超时，服务可能正在启动，请稍后重新连接':'网络连接失败，请检查网络后重试')}
   finally{clearTimeout(timer)}
 }
-export async function api<T=any>(path:string,method='GET',body?:unknown,quiet=false):Promise<T>{
+export async function api<T=any>(path:string,method='GET',body?:unknown,quiet=false,timeoutMs=12000):Promise<T>{
   try{
     if(method!=='GET'&&!csrfToken){const r=await request('/auth/csrf');if(!r.ok)throw new ApiError(r.status,'无法获取安全令牌');csrfToken=(await r.json()).token}
-    const res=await request(path,{method,headers:{...(body!==undefined?{'Content-Type':'application/json'}:{}),...(method!=='GET'?{'X-CSRF-TOKEN':csrfToken}:{})},body:body===undefined?undefined:JSON.stringify(body)})
+    const res=await request(path,{method,headers:{...(body!==undefined?{'Content-Type':'application/json'}:{}),...(method!=='GET'?{'X-CSRF-TOKEN':csrfToken}:{})},body:body===undefined?undefined:JSON.stringify(body)},timeoutMs)
     const data=await res.json()
     if(!res.ok){if(res.status===403)resetCsrf();throw new ApiError(res.status,data.message||'请求失败')}
     return data as T

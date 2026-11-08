@@ -45,4 +45,3 @@ describe('真实 Vue 组件交互（模拟 DOM，不是真实浏览器）',()=>{
  it('演示入口只填充账号，由用户主动提交登录',async()=>{await show(Login);await button('学生账号').trigger('click');const inputs=wrapper!.findAll('input');expect((inputs[0]!.element as HTMLInputElement).value).toBe('student');expect((inputs[1]!.element as HTMLInputElement).value).toBe('CampusHub@2026')})
  it('管理员器材编辑器提交实际字段而不允许客户端直接改可用库存',async()=>{await show(EntityEditor,{kind:'equipment',item:{id:9,name:'测试投影仪',category:'活动设备',assetCode:'CH009',description:'含电源与连接线',location:'信息楼',totalQuantity:5,availableQuantity:2,active:true},clubs});await button('保存器材').trigger('click');await flushPromises();expect(api).toHaveBeenCalledWith('/admin/equipment/9','PUT',expect.objectContaining({totalQuantity:5,assetCode:'CH009'}));const body=vi.mocked(api).mock.calls.at(-1)?.[2] as Record<string,unknown>;expect(body).not.toHaveProperty('availableQuantity');expect(wrapper!.emitted('saved')).toHaveLength(1)})
 })
-
