@@ -5,6 +5,7 @@ import 'element-plus/dist/index.css'
 import './style.css'
 import './riding.css'
 import './club-profile.css'
+import './design.css'
 import App from './App.vue'
 import {router} from './router'
 createApp(App).use(router).use(ElementPlus,{locale:zhCn}).mount('#app')
