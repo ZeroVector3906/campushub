@@ -3,12 +3,19 @@ import { ElMessage } from 'element-plus'
 let csrfToken = ''
 export const connectionEvents=new EventTarget()
 export class ApiError extends Error { constructor(public status:number,message:string){super(message)} }
-// A public HTML request can trigger a host wake before JSON API readiness is checked.
-export async function wakeService(){
- const url=import.meta.env.VITE_SERVICE_WAKE_URL
- if(!url)return
- const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000)
- try{const response=await fetch(url,{method:'GET',mode:'no-cors',credentials:'omit',cache:'no-store',headers:{Accept:'text/html'},signal:controller.signal});await response.body?.cancel()}catch{/* The health request below determines whether the service is actually ready. */}finally{clearTimeout(timer)}
+// Use the host's ordinary startup document in a separate origin, never as API data.
+export function serviceWakeUrl(){
+ try{const target=new URL(import.meta.env.VITE_SERVICE_WAKE_URL||'');if(target.protocol!=='https:'||target.username||target.password||target.search||target.hash||target.pathname!=='/'||(typeof location!=='undefined'&&target.origin===location.origin))return '';return target.href}catch{return ''}
+}
+export async function wakeService():Promise<()=>void>{
+ const url=serviceWakeUrl()
+ if(!url||typeof document==='undefined')return ()=>{}
+ const frame=document.createElement('iframe')
+ frame.src=url;frame.title='骑行服务启动';frame.hidden=true;frame.tabIndex=-1
+ frame.referrerPolicy='no-referrer';frame.setAttribute('aria-hidden','true')
+ frame.setAttribute('sandbox','allow-scripts allow-same-origin');frame.setAttribute('credentialless','')
+ document.body.append(frame)
+ return ()=>frame.remove()
 }
 export function resetCsrf(){csrfToken=''}
 // Bound every request, including response-body reads. Never replay a write automatically.

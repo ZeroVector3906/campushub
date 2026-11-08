@@ -3,10 +3,10 @@ import {brand} from './brand'
 import {computed,nextTick,onMounted,onUnmounted,ref,watch} from 'vue'
 import {useRoute,useRouter} from 'vue-router'
 import {state,isAdmin,initialize,logout} from './store'
-import {run,connectionEvents} from './api'
+import {run,connectionEvents,serviceWakeUrl} from './api'
 import Icon from './components/Icon.vue'
 
-const route=useRoute(),router=useRouter()
+const route=useRoute(),router=useRouter(),wakeUrl=serviceWakeUrl()
 const mobile=ref(false),services=ref(false),searchOpen=ref(false),notifications=ref(false),search=ref('')
 const searchInput=ref<HTMLInputElement>()
 const serviceLinks=[{path:'/rooms',label:'骑行室使用',description:'为下一次出发，留一处空间。',icon:'bike'},{path:'/equipment',label:'器材借用',description:'共享装备，让热爱轻装上路。',icon:'package'},{path:'/repairs',label:'在线报修',description:'提交问题，随时了解维修进度。',icon:'wrench'}]
@@ -55,7 +55,7 @@ onMounted(()=>{connectionEvents.addEventListener('unavailable',reconnectAfterFai
   <div class="site-context"><div><router-link to="/">{{brand.name}}</router-link><span>{{route.path==='/'?'热爱不设终点':route.meta.title}}</span><router-link to="/clubs" class="context-join">加入征途<Icon name="right" :size="13"/></router-link></div></div>
   <div class="site-workspace">
    <main id="main-content" tabindex="-1">
-    <div v-if="state.connecting||state.error" class="connection-status" role="status" aria-live="polite"><span>{{state.connecting?'正在连接骑行服务，服务启动期间可继续浏览俱乐部介绍…':state.error+'。介绍页面可继续浏览，在线申请请等待连接恢复。'}}</span><el-button size="small" :loading="state.connecting" @click="connect">重新连接</el-button></div>
+    <div v-if="state.connecting||state.error" class="connection-status" role="status" aria-live="polite"><span>{{state.connecting?'正在连接骑行服务，服务启动期间可继续浏览俱乐部介绍…':state.error+'。介绍页面可继续浏览，在线申请请等待连接恢复。'}}</span><a v-if="wakeUrl" :href="wakeUrl" target="_blank" rel="noopener noreferrer" class="wake-link">打开服务启动页</a><el-button size="small" :loading="state.connecting" @click="connect">重新连接</el-button></div>
     <div v-if="(route.meta.auth||route.meta.admin)&&!state.ready" class="loading-page"><el-skeleton :rows="6" animated/></div>
     <div v-else-if="(route.meta.auth||route.meta.admin)&&state.error" class="panel error-panel"><h2>骑行服务暂时未连接</h2><p>你的资料不会因连接失败而被清除，请稍后重新连接。</p><el-button type="primary" :loading="state.connecting" @click="connect">重新连接</el-button></div>
     <router-view v-else v-slot="{Component,route:viewRoute}"><Transition name="page" mode="out-in" appear><div :key="viewRoute.path" class="route-page"><component :is="Component"/></div></Transition></router-view>

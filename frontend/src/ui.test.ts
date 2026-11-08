@@ -16,7 +16,7 @@ import Login from './pages/Login.vue'
 import EntityEditor from './components/EntityEditor.vue'
 import {state} from './store'
 import {api} from './api'
-vi.mock('./api',()=>({api:vi.fn(async()=>({})),run:async(fn:()=>Promise<unknown>)=>{await fn();return true},resetCsrf:vi.fn(),wakeService:vi.fn(async()=>{}),downloadReport:vi.fn()}))
+vi.mock('./api',()=>({api:vi.fn(async()=>({})),run:async(fn:()=>Promise<unknown>)=>{await fn();return true},resetCsrf:vi.fn(),wakeService:vi.fn(async()=>()=>{}),downloadReport:vi.fn()}))
 vi.mock('./store',async(importOriginal)=>{const actual=await importOriginal<typeof import('./store')>();return{...actual,refreshPublic:vi.fn(),refreshMine:vi.fn(),login:vi.fn()}})
 let wrapper:VueWrapper|undefined
 const clubs=[{id:1,name:'光影摄影社',category:'文化艺术',summary:'用镜头记录校园',description:'欢迎零基础同学',icon:'camera',color:'#547D6A',location:'艺术楼',contact:'photo@campus.edu',recruiting:true,active:true,memberCount:8},{id:2,name:'山野户外社',category:'体育运动',summary:'一起走进自然',description:'安全同行',icon:'mountain',color:'#8C8960',location:'体育馆',contact:'outdoor@campus.edu',recruiting:true,active:true,memberCount:5}]

@@ -16,10 +16,10 @@ let initialization:Promise<void>|undefined
 export function initialize():Promise<void>{
  if(initialization)return initialization
  state.connecting=true;state.error=''
- initialization=(async()=>{try{
+ initialization=(async()=>{let releaseWake=()=>{};try{
    // A cold host needs a longer readiness window than an ordinary form request.
-   await wakeService()
-   await api('/health','GET',undefined,true,45000)
+   try{await api('/health','GET',undefined,true,5000)}catch{releaseWake=await wakeService();await api('/health','GET',undefined,true,45000)}
+   releaseWake();releaseWake=()=>{}
    const results=await Promise.allSettled([refreshPublic(),api<User>('/auth/me','GET',undefined,true)])
    const auth=results[1]
    if(auth.status==='fulfilled')state.user=auth.value
@@ -27,7 +27,7 @@ export function initialize():Promise<void>{
    else throw auth.reason
    if(results[0].status==='rejected')throw results[0].reason
    await refreshMine()
- }catch(e){state.error=e instanceof Error?e.message:'加载失败'}finally{state.ready=true;state.connecting=false;initialization=undefined}})()
+ }catch(e){state.error=e instanceof Error?e.message:'加载失败'}finally{releaseWake();state.ready=true;state.connecting=false;initialization=undefined}})()
  return initialization
 }
 export async function login(username:string,password:string){state.user=await api<User>('/auth/login','POST',{username,password});resetCsrf();await refreshMine()}

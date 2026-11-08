@@ -24,3 +24,5 @@ body{font-size:15px;line-height:1.5;letter-spacing:-.02em;-webkit-font-smoothing
 @media(max-width:600px){.site-shell .request-form .el-radio-button__inner{font-size:12px;padding:12px 10px}}
 
 .connection-status{display:flex;align-items:center;justify-content:center;gap:16px;padding:14px 5%;background:#eef5ff;color:#344866;font-size:13px;line-height:1.6}.connection-status span{max-width:850px}@media(max-width:640px){.connection-status{align-items:flex-start;gap:8px}.connection-status .el-button{flex-shrink:0}}
+
+.wake-link{flex-shrink:0;color:#0071e3;text-decoration:underline;white-space:nowrap}@media(max-width:640px){.connection-status{flex-wrap:wrap;justify-content:flex-start}.connection-status>span{flex-basis:100%}}
