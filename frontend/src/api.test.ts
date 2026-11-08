@@ -1,0 +1,10 @@
+// @vitest-environment happy-dom
+import {beforeEach,afterEach,it,expect,vi} from 'vitest'
+import {api,resetCsrf} from './api'
+vi.mock('element-plus',()=>({ElMessage:{error:vi.fn(),success:vi.fn()}}))
+beforeEach(()=>{resetCsrf();vi.useFakeTimers()})
+afterEach(()=>{vi.unstubAllGlobals();vi.useRealTimers()})
+it('HTML startup responses are never accepted as API success',async()=>{vi.stubGlobal('fetch',vi.fn(async()=>new Response('<html>Starting</html>',{headers:{'Content-Type':'text/html'}})));await expect(api('/health','GET',undefined,true)).rejects.toMatchObject({status:503})})
+it('a hung request aborts within 12 seconds',async()=>{vi.stubGlobal('fetch',vi.fn((_url,init)=>new Promise((_,reject)=>init.signal.addEventListener('abort',()=>reject(new Error('aborted'))))));const result=expect(api('/health','GET',undefined,true)).rejects.toMatchObject({status:0});await vi.advanceTimersByTimeAsync(12000);await result})
+it('a failed write is not automatically replayed',async()=>{const fetch=vi.fn().mockResolvedValueOnce(new Response('{"token":"test"}',{headers:{'Content-Type':'application/json'}})).mockRejectedValueOnce(new Error('offline'));vi.stubGlobal('fetch',fetch);await expect(api('/activities/1/registrations','POST',undefined,true)).rejects.toMatchObject({status:0});expect(fetch).toHaveBeenCalledTimes(2);expect(fetch.mock.calls[1]![1].method).toBe('POST')})
+it('401 remains distinguishable from a network failure',async()=>{vi.stubGlobal('fetch',vi.fn(async()=>new Response('{"message":"请登录"}',{status:401,headers:{'Content-Type':'application/json'}})));await expect(api('/auth/me','GET',undefined,true)).rejects.toMatchObject({status:401})})
