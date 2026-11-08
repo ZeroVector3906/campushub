@@ -1,5 +1,6 @@
 import { ElMessage } from 'element-plus'
 let csrfToken = ''
+export const connectionEvents=new EventTarget()
 export class ApiError extends Error { constructor(public status:number,message:string){super(message)} }
 export function resetCsrf(){csrfToken=''}
 // Bound every request, including response-body reads. Never replay a write automatically.
@@ -22,7 +23,7 @@ export async function api<T=any>(path:string,method='GET',body?:unknown,quiet=fa
     const data=await res.json()
     if(!res.ok){if(res.status===403)resetCsrf();throw new ApiError(res.status,data.message||'请求失败')}
     return data as T
-  }catch(error){if(!quiet)ElMessage.error(error instanceof Error?error.message:'请求失败');throw error}
+  }catch(error){if(!quiet){const unavailable=error instanceof ApiError&&[0,503].includes(error.status);ElMessage.error(unavailable&&method!=='GET'?'连接中断，操作结果尚未确认；恢复后请先查看记录，再决定是否重试':error instanceof Error?error.message:'请求失败');if(unavailable)connectionEvents.dispatchEvent(new Event('unavailable'))}throw error}
 }
 export async function run(task:()=>Promise<unknown>,success?:string){try{await task();if(success)ElMessage.success(success);return true}catch{return false}}
 export async function downloadReport(type:string){

@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import {beforeEach,afterEach,it,expect,vi} from 'vitest'
-import {api,resetCsrf} from './api'
+import {api,resetCsrf,connectionEvents} from './api'
 vi.mock('element-plus',()=>({ElMessage:{error:vi.fn(),success:vi.fn()}}))
 beforeEach(()=>{resetCsrf();vi.useFakeTimers()})
 afterEach(()=>{vi.unstubAllGlobals();vi.useRealTimers()})
@@ -10,3 +10,5 @@ it('a failed write is not automatically replayed',async()=>{const fetch=vi.fn().
 it('401 remains distinguishable from a network failure',async()=>{vi.stubGlobal('fetch',vi.fn(async()=>new Response('{"message":"请登录"}',{status:401,headers:{'Content-Type':'application/json'}})));await expect(api('/auth/me','GET',undefined,true)).rejects.toMatchObject({status:401})})
 
 it('startup readiness has a separate bounded wait while ordinary requests stay short',async()=>{vi.stubGlobal('fetch',vi.fn((_url,init)=>new Promise((_,reject)=>init.signal.addEventListener('abort',()=>reject(new Error('aborted'))))));const result=expect(api('/health','GET',undefined,true,45000)).rejects.toMatchObject({status:0});await vi.advanceTimersByTimeAsync(12000);expect(vi.mocked(fetch).mock.calls[0]![1]!.signal!.aborted).toBe(false);await vi.advanceTimersByTimeAsync(33000);await result})
+
+it('interactive connection failures request read-only recovery, quiet startup failures do not recurse',async()=>{vi.stubGlobal('fetch',vi.fn().mockRejectedValue(new Error('offline')));const listener=vi.fn();connectionEvents.addEventListener('unavailable',listener);try{await expect(api('/activities','GET',undefined,false)).rejects.toMatchObject({status:0});expect(listener).toHaveBeenCalledTimes(1);await expect(api('/health','GET',undefined,true)).rejects.toMatchObject({status:0});expect(listener).toHaveBeenCalledTimes(1)}finally{connectionEvents.removeEventListener('unavailable',listener)}})

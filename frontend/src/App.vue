@@ -3,7 +3,7 @@ import {brand} from './brand'
 import {computed,nextTick,onMounted,onUnmounted,ref,watch} from 'vue'
 import {useRoute,useRouter} from 'vue-router'
 import {state,isAdmin,initialize,logout} from './store'
-import {run} from './api'
+import {run,connectionEvents} from './api'
 import Icon from './components/Icon.vue'
 
 const route=useRoute(),router=useRouter()
@@ -20,8 +20,9 @@ watch(()=>route.fullPath,closePanels)
 let reconnectTimer:ReturnType<typeof setTimeout>|undefined
 let reconnectAttempts=0
 async function connect(){clearTimeout(reconnectTimer);await initialize();if(state.error&&reconnectAttempts++<3)reconnectTimer=setTimeout(connect,15000)}
-onUnmounted(()=>clearTimeout(reconnectTimer))
-onMounted(async()=>{await connect();if((route.meta.auth||route.meta.admin)&&!state.user)router.replace({path:'/login',query:{redirect:route.fullPath}});else if(route.meta.admin&&!isAdmin.value)router.replace('/')})
+function reconnectAfterFailure(){if(!state.connecting){reconnectAttempts=0;void connect()}}
+onUnmounted(()=>{clearTimeout(reconnectTimer);connectionEvents.removeEventListener('unavailable',reconnectAfterFailure)})
+onMounted(async()=>{connectionEvents.addEventListener('unavailable',reconnectAfterFailure);await connect();if((route.meta.auth||route.meta.admin)&&!state.user)router.replace({path:'/login',query:{redirect:route.fullPath}});else if(route.meta.admin&&!isAdmin.value)router.replace('/')})
 </script>
 
 <template>
