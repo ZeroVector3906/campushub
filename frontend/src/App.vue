@@ -2,7 +2,7 @@
 import {brand} from './brand'
 import {computed,nextTick,onMounted,onUnmounted,ref,watch} from 'vue'
 import {useRoute,useRouter} from 'vue-router'
-import {state,isAdmin,initialize,logout} from './store'
+import {state,isAdmin,initialize,logout,showGuestRecruitment} from './store'
 import {run,connectionEvents,serviceWakeUrl} from './api'
 import Icon from './components/Icon.vue'
 
@@ -52,7 +52,7 @@ onMounted(()=>{connectionEvents.addEventListener('unavailable',reconnectAfterFai
    <Transition name="nav-reveal"><nav v-if="mobile" id="mobile-navigation" class="mobile-navigation" aria-label="手机导航" @click="closePanels"><router-link to="/">俱乐部首页<Icon name="right"/></router-link><router-link to="/clubs">了解征途<Icon name="right"/></router-link><router-link to="/activities">骑行活动<Icon name="right"/></router-link><router-link to="/suggestions">活动建议<Icon name="right"/></router-link><router-link v-for="item in serviceLinks" :key="item.path" :to="item.path">{{item.label}}<Icon name="right"/></router-link><router-link to="/center">成员中心<Icon name="right"/></router-link><router-link v-if="isAdmin" to="/admin">管理后台<Icon name="right"/></router-link></nav></Transition>
   </header>
   <button v-if="services||searchOpen||mobile" class="nav-backdrop" aria-label="关闭展开的导航" @click="closePanels"/>
-  <div class="site-context"><div><router-link to="/">{{brand.name}}</router-link><span>{{route.path==='/'?'热爱不设终点':route.meta.title}}</span><router-link to="/clubs" class="context-join">加入征途<Icon name="right" :size="13"/></router-link></div></div>
+  <div class="site-context"><div><router-link to="/">{{brand.name}}</router-link><span>{{route.path==='/'?'热爱不设终点':route.meta.title}}</span><router-link v-if="showGuestRecruitment" to="/clubs" class="context-join">加入征途<Icon name="right" :size="13"/></router-link></div></div>
   <div class="site-workspace">
    <main id="main-content" tabindex="-1">
     <div v-if="state.connecting||state.error" class="connection-status" role="status" aria-live="polite"><span>{{state.connecting?'骑行服务正在启动，首次连接可能需要一两分钟，可先浏览俱乐部介绍…':state.error+'。介绍页面可继续浏览，在线申请请等待连接恢复。'}}</span><a v-if="wakeUrl" :href="wakeUrl" target="_blank" rel="noopener noreferrer" class="wake-link">打开服务启动页</a><el-button size="small" :loading="state.connecting" @click="connect">重新连接</el-button></div>

@@ -3,6 +3,7 @@ import { api, resetCsrf, ApiError, wakeService } from './api'
 import type { User,Club,Activity,Equipment,Row,Dashboard } from './types'
 export const state=reactive({user:null as User|null,clubs:[] as Club[],activities:[] as Activity[],equipment:[] as Equipment[],overview:{} as Row,mine:{memberships:[],registrations:[],loans:[],repairs:[]} as Dashboard,ready:false,error:'',busy:false,publicLoaded:false,connecting:false})
 export const isAdmin=computed(()=>['ADMIN','SUPER_ADMIN'].includes(state.user?.role||''))
+export const showGuestRecruitment=computed(()=>state.ready&&!state.error&&!state.user)
 export async function refreshPublic(){
  const keys=['clubs','activities','equipment','overview'] as const
  const results=await Promise.allSettled([api<Club[]>('/clubs','GET',undefined,true),api<Activity[]>('/activities','GET',undefined,true),api<Equipment[]>('/equipment','GET',undefined,true),api<Row>('/public/overview','GET',undefined,true)])

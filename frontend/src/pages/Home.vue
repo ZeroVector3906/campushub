@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed,onBeforeUnmount,onMounted,ref} from 'vue'
 import {useRouter} from 'vue-router'
-import {state} from '../store'
+import {state,showGuestRecruitment} from '../store'
 import {vReveal} from '../motion'
 import {clubNews,brand} from '../brand'
 import {clubProfile as profile} from '../clubProfile'
@@ -79,17 +79,17 @@ onBeforeUnmount(()=>{
     <span class="zt-pill">2013 年启程 · 与热爱同行</span>
     <h1 id="home-title">把热爱，<br><span>骑成征途。</span></h1>
     <p>一辆单车，一群伙伴，一段共同的征途。<br>在骑行中遇见风景，也遇见更好的自己。</p>
-    <div class="zt-actions"><router-link to="/clubs" class="zt-primary">了解征途 · 申请加入<Icon name="right" :size="17"/></router-link><router-link to="/activities" class="zt-secondary">查看骑行活动<Icon name="right" :size="17"/></router-link></div>
+    <div class="zt-actions"><router-link v-if="showGuestRecruitment" to="/clubs" class="zt-primary">了解征途 · 申请加入<Icon name="right" :size="17"/></router-link><router-link to="/activities" class="zt-secondary">查看骑行活动<Icon name="right" :size="17"/></router-link></div>
    </div>
    <figure ref="heroScene" class="zt-hero-visual home-3d-scene" v-reveal @pointermove="trackHeroPointer" @pointerleave="resetHeroPointer" aria-label="征途车队照片，可随指针和页面滚动产生景深变化"><div class="scene-plane"><img src="/images/zhengtu-team.jpg" alt="征途单车俱乐部车队合影（简介资料图）" fetchpriority="high"><div class="scene-glint" aria-hidden="true"></div><svg class="scene-route" viewBox="0 0 1320 430" preserveAspectRatio="none" aria-hidden="true"><path d="M82 302C208 295 226 221 365 235S519 307 640 239 776 146 915 188s174 94 323 26" pathLength="1"/><circle cx="1225" cy="215" r="5"/></svg><div class="scene-stamp" aria-hidden="true"><span>西安欧亚学院 · 2013 — 至今</span><strong>一段征途，<br>由此出发。</strong><i><span></span></i></div><div class="scene-coordinate" aria-hidden="true"><span>骑行 · 探索 · 同行</span><b>始于欧亚校园</b></div></div><figcaption><span>西安欧亚学院 · 征途单车俱乐部</span><span>俱乐部车队合影 · 简介资料图</span></figcaption></figure>
   </section>
   <div class="zt-stat-grid"><div v-for="(s,i) in stats" :key="s.label" v-reveal="{delay:i*60}"><b>{{s.value??'—'}}<small>{{s.unit}}</small></b><span>{{s.label}}</span></div></div>
   <section class="zt-story"><div class="story-copy" v-reveal><div class="eyebrow">关于征途</div><h2>从校园出发。<br><span>让世界成为你的风景。</span></h2><p>{{profile.brief}}</p><router-link to="/clubs" class="text-link">认识征途单车俱乐部<Icon name="right" :size="17"/></router-link><div class="zt-values"><span><Icon name="shield" :size="18"/>安全同行</span><span><Icon name="users" :size="18"/>团队协作</span><span><Icon name="mountain" :size="18"/>探索成长</span></div></div><figure v-reveal="{kind:'image'}"><img src="/images/zhengtu-anniversary.jpg" alt="征途单车俱乐部十周年自行车运动文化活动现场" loading="lazy"><figcaption>十周年活动现场 · 简介资料图</figcaption></figure></section>
-  <MemberComparison/>
+  <MemberComparison v-if="showGuestRecruitment"/>
   <section class="home-section"><div class="section-heading" v-reveal><div><div class="eyebrow">下一程，一起出发</div><h2>下一场，骑向哪里？</h2><p>活动发布、在线报名、现场签到，每一次参与都有记录。</p></div><router-link to="/activities" class="text-link">全部活动<Icon name="right" :size="17"/></router-link></div><div v-if="upcoming.length" class="activity-grid" v-reveal><ActivityCard v-for="a in upcoming.slice(0,3)" :key="a.id" :activity="a" @select="router.push({path:'/activities',query:{activity:a.id}})"/></div><div v-else class="zt-empty-ride panel" v-reveal><span class="empty-ride-icon"><Icon name="bike" :size="46"/></span><div><h3>{{state.publicLoaded?'下一次出发，正在准备中。':'骑行活动数据正在连接'}}</h3><p>新的相遇，值得期待。正式时间、路线与集合地点以活动详情为准。</p></div><router-link :to="['ADMIN','SUPER_ADMIN'].includes(state.user?.role||'')?'/admin':'/activities'" class="text-link">{{['ADMIN','SUPER_ADMIN'].includes(state.user?.role||'')?'前往后台发布活动':'查看活动记录'}}<Icon name="right" :size="17"/></router-link></div></section>
   <section class="home-section service-section"><div class="section-heading" v-reveal><div><div class="eyebrow">骑行之外，也为你想好</div><h2>专注热爱。其他，交给征途。</h2></div></div><div class="zt-services"><router-link v-for="(service,i) in services" :key="service.path" v-reveal="{delay:i*60}" :to="service.path"><Icon :name="service.icon" :size="34"/><h3>{{service.title}}</h3><p>{{service.text}}</p><span>了解服务<Icon name="right" :size="16"/></span></router-link></div></section>
   <section class="zt-news home-section"><div class="section-heading" v-reveal><div><div class="eyebrow">被记录的热爱</div><h2>征途，有故事。</h2><p>来自学校官网的俱乐部报道。</p></div></div><div class="zt-news-grid"><a v-for="(n,i) in clubNews" :key="n.url" :href="n.url" target="_blank" rel="noopener noreferrer" class="zt-news-card" v-reveal="{delay:i*90}"><div class="zt-news-number"><span>0{{i+1}}</span><Icon name="arrowup" :size="24"/></div><span class="category-label">{{n.tag}} · {{n.date}}</span><h3>{{n.title}}</h3><p>{{n.summary}}</p><span class="text-link">阅读学校原文<Icon name="arrowup" :size="16"/></span></a></div></section>
-  <section class="zt-join-banner" v-reveal><span class="eyebrow">不必一个人出发</span><h2>下一段征途，<br>期待有你。</h2><p>找到你的伙伴，开启属于你的骑行生活。</p><button class="zt-primary" @click="guide=true">第一次加入？查看指引<Icon name="right" :size="17"/></button></section>
+  <section v-if="showGuestRecruitment" class="zt-join-banner" v-reveal><span class="eyebrow">不必一个人出发</span><h2>下一段征途，<br>期待有你。</h2><p>找到你的伙伴，开启属于你的骑行生活。</p><button class="zt-primary" @click="guide=true">第一次加入？查看指引<Icon name="right" :size="17"/></button></section>
  </div>
  <el-dialog v-model="guide" title="征途入社与活动指引" width="min(590px,94vw)"><div class="guide-content"><h3>01 · 提交入社申请</h3><p>注册时选择加入俱乐部或社团并填写资料，招新开放时会提交待审核申请。已有账号可在俱乐部展示申请加入或查看审核结果；成员中心仅保留身份状态和活动、借还记录。</p><h3>02 · 报名与签到</h3><p>查看已发布活动的时间、集合地点和说明，按需报名。签到开放期间，在成员中心输入现场负责人提供的签到码。</p><h3>03 · 器材借还与报修</h3><p>按实际库存申请器材，经审核后领取；使用后提交归还申请，等待管理员验收。器材问题可在线提交报修工单。</p><h3>出发前</h3><p>请阅读具体活动安排，检查车辆与装备，遵守交通规则。未发布的路线、时间和联系方式以俱乐部确认信息为准。</p></div><template #footer><el-button type="primary" @click="guide=false;router.push('/clubs')">前往入社申请</el-button></template></el-dialog>
 </template>
