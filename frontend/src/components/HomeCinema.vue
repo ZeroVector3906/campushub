@@ -146,15 +146,15 @@ onBeforeUnmount(() => {
   overflow: clip; min-height: calc(100vh - 66px); min-height: calc(100svh - 66px);
   margin: 0; padding: 0; border-radius: 24px 24px 0 0; background: #081018;
 }
-.cinema-glow { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.cinema-glow { z-index: -2; position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .cinema-glow { background: radial-gradient(ellipse at 72% 50%, #1a708d80, transparent 66%), linear-gradient(130deg, #0b1724, #101f2c 65%, #071019); }
 .cinema-stage::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(90deg, #081018 3%, #081018ca 42%, transparent 80%),
-    linear-gradient(0deg, #081018, transparent 40%, #08101855); z-index: 0;
+    linear-gradient(0deg, #081018, transparent 40%, #08101855); z-index: -1;
 }
 .cinema-inner {
-  z-index: 1; position: relative; width: 100%; display: grid; align-items: center;
+  position: relative; width: 100%; display: grid; align-items: center;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr); gap: clamp(16px, 3vw, 48px); padding: clamp(24px, 5vw, 84px);
 }
 .cinema-copy { z-index: 1; min-width: 0; }
@@ -165,7 +165,7 @@ onBeforeUnmount(() => {
 .cinema-inner .cinema-actions { justify-content: flex-start; display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
 .cinema-actions :deep(.zt-secondary) { color: #e5f9ff; border-color: #81bfce80; background: #0b1d28; }
 .cinema-bike { min-width: 0; padding: 5%; pointer-events: none; mix-blend-mode: screen; }
-.bike-entry { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 10px #41c6ee35); }
+.bike-entry { display: block; width: 100%; height: auto; }
 .cinema-meter { grid-column: 1 / -1; margin-top: clamp(0px, 3vw, 36px); display: grid; gap: 12px; font-size: .75rem; color: #bad2de; }
 .cinema-meter i { display: block; width: 100%; height: 1px; transform-origin: left; background: linear-gradient(90deg,#77edff,#77edff22); }
 .cinema-history { background: linear-gradient(#081018,#10232f 60%,#142c38); padding: clamp(32px, 7vw, 100px) clamp(20px, 6vw, 96px); border-radius: 0 0 24px 24px; }
