@@ -39,7 +39,7 @@ onMounted(async () => {
         opacity: 0.35, y: 18, stagger: 0.12, duration: 0.8, ease: 'power2.out',
       })
       gsap.from('.bike-entry', {
-        scale: 0.91, rotation: -5, opacity: 0.4, duration: 1.15, ease: 'power3.out',
+        scale: 0.92, rotation: -2, opacity: 0.55, duration: 1.15, ease: 'power3.out',
       })
 
       gsap.timeline({
@@ -54,10 +54,10 @@ onMounted(async () => {
         },
       })
         .to('.cinema-bike', {
-          xPercent: desktop ? -22 : 0, yPercent: desktop ? 8 : -8,
-          scale: desktop ? 1.17 : 1.05, rotation: desktop ? -9 : -3, opacity: 0.82,
+          xPercent: desktop ? 2 : 0, yPercent: desktop ? 4 : -3,
+          scale: desktop ? 1.035 : 1.015, rotation: desktop ? -2 : -1, opacity: 0.94,
         }, 0)
-        .to('.cinema-copy', { yPercent: desktop ? -9 : -3 }, 0)
+        .to('.cinema-copy', { yPercent: desktop ? -5 : 0 }, 0)
         .to('.cinema-glow', { xPercent: desktop ? -24 : -8, opacity: 0.4 }, 0)
         .fromTo('.cinema-meter i', { scaleX: 0 }, { scaleX: 1 }, 0)
 
@@ -155,7 +155,7 @@ onBeforeUnmount(() => {
 }
 .cinema-inner {
   z-index: 1; position: relative; width: 100%; display: grid; align-items: center;
-  grid-template-columns: 1fr 1.18fr; gap: 1rem; padding: clamp(24px, 5vw, 84px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr); gap: clamp(16px, 3vw, 48px); padding: clamp(24px, 5vw, 84px);
 }
 .cinema-copy { z-index: 1; min-width: 0; }
 .cinema-label { color: #8ed7e4; font: 600 .73rem/1.5 ui-monospace, monospace; letter-spacing: .15em; }
@@ -164,8 +164,8 @@ onBeforeUnmount(() => {
 .cinema-description, .history-card p { color: #bccfd7; line-height: 1.7; }
 .cinema-inner .cinema-actions { justify-content: flex-start; display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
 .cinema-actions :deep(.zt-secondary) { color: #e5f9ff; border-color: #81bfce80; background: #0b1d28; }
-.cinema-bike { min-width: 0; pointer-events: none; mix-blend-mode: screen; }
-.bike-entry { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 12px #41c6ee50); }
+.cinema-bike { min-width: 0; padding: 5%; pointer-events: none; mix-blend-mode: screen; }
+.bike-entry { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 10px #41c6ee35); }
 .cinema-meter { grid-column: 1 / -1; margin-top: clamp(0px, 3vw, 36px); display: grid; gap: 12px; font-size: .75rem; color: #bad2de; }
 .cinema-meter i { display: block; width: 100%; height: 1px; transform-origin: left; background: linear-gradient(90deg,#77edff,#77edff22); }
 .cinema-history { background: linear-gradient(#081018,#10232f 60%,#142c38); padding: clamp(32px, 7vw, 100px) clamp(20px, 6vw, 96px); border-radius: 0 0 24px 24px; }
@@ -179,8 +179,8 @@ onBeforeUnmount(() => {
 .history-card h3 { margin: 0; color: #edf7fa; }
 .history-card p { margin: .45em 0; }
 @media (max-width: 899px) {
-  .cinema-inner { grid-template-columns: 1fr; gap: 10px; }
-  .cinema-bike { max-width: 480px; justify-self: center; width: 100%; }
+  .cinema-inner { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .cinema-bike { max-width: 480px; justify-self: center; width: 100%; padding: 4%; }
   .cinema-stage::after { background: linear-gradient(180deg,#081018e6, #0810188c 64%, #081018); }
   .history-card { grid-template-columns: 1fr; gap: 8px; padding: 16px; }
 }
