@@ -1,0 +1,2085 @@
+{
+  "checkedAt": "2026-11-09T01:19:53.043Z",
+  "url": "https://zhengtu-cycling.onrender.com",
+  "frontendTests": 44,
+  "backendTests": 33,
+  "build": "passed",
+  "apiTimeoutMs": 12000,
+  "bootstrapRetries": 3,
+  "bootstrapRetryDelayMs": 15000,
+  "writeReplay": false,
+  "startupSeconds": {
+    "before": 101.999,
+    "after": 55.6
+  },
+  "limitations": [
+    "Free Java backend still spins down",
+    "No physical phone FPS test",
+    "No long-term availability or load test"
+  ],
+  "bootstrapHealthTimeoutMs": 45000,
+  "oldIdleCycle": {
+    "lastBusinessRequest": "2026-11-08T18:16:55.692Z",
+    "shutdown": "2026-11-08T18:31:55.115Z",
+    "frontendOpened": "2026-11-08T18:32:16.396Z",
+    "homepageVisibleMs": 1824,
+    "automaticWakePassed": false,
+    "directRequestTimeoutSeconds": 120.009926,
+    "recoveryDeploy": "dep-dboc3epsrm7s73bhs3dg",
+    "finding": "No application startup log appeared during HTTP wake attempts; platform wake or ingress issue, internal cause unknown"
+  },
+  "cdnSamples": [
+    {
+      "at": "2026-11-08T18:23:57.467Z",
+      "htmlStatus": 200,
+      "htmlMs": 824,
+      "assetStatus": 200,
+      "assetMs": 437,
+      "script": "/assets/index-B-D5mTea.js",
+      "scriptSha256": "7875fb04fe4fa38332750ad032bf11cb7320919f860d29f407cf3a11ddb921d8",
+      "apiRequested": false
+    },
+    {
+      "at": "2026-11-08T18:26:17.651Z",
+      "htmlStatus": 200,
+      "htmlMs": 608,
+      "assetStatus": 200,
+      "assetMs": 266,
+      "script": "/assets/index-B-D5mTea.js",
+      "scriptSha256": "7875fb04fe4fa38332750ad032bf11cb7320919f860d29f407cf3a11ddb921d8",
+      "apiRequested": false
+    },
+    {
+      "at": "2026-11-08T18:29:27.935Z",
+      "htmlStatus": 200,
+      "htmlMs": 707,
+      "assetStatus": 200,
+      "assetMs": 328,
+      "script": "/assets/index-B-D5mTea.js",
+      "scriptSha256": "7875fb04fe4fa38332750ad032bf11cb7320919f860d29f407cf3a11ddb921d8",
+      "apiRequested": false
+    },
+    {
+      "at": "2026-11-08T18:32:11.415Z",
+      "htmlStatus": 200,
+      "htmlMs": 499,
+      "assetStatus": 200,
+      "assetMs": 142,
+      "script": "/assets/index-B-D5mTea.js",
+      "scriptSha256": "7875fb04fe4fa38332750ad032bf11cb7320919f860d29f407cf3a11ddb921d8",
+      "apiRequested": false
+    }
+  ],
+  "browserCsv": {
+    "responseStatus": 200,
+    "contentType": "text/csv;charset=UTF-8",
+    "bytes": 1952,
+    "fileSaved": "not confirmed",
+    "downloadManager": "internal URL access denied by browser policy"
+  },
+  "sourceCommit": "314c1ff6c7bcf4ebc0cfa7570d51f8f4582630e8",
+  "backendSourceCommit": "314c1ff6c7bcf4ebc0cfa7570d51f8f4582630e8",
+  "publicDeploy": "dep-dbohq9psrm7s73c169f0",
+  "backendDeploy": "dep-dbohq9ff3r2c73b73dog",
+  "reports": {
+    "core": {
+      "base": "https://zhengtu-cycling.onrender.com",
+      "completedAt": "2026-11-09T01:16:01.825Z",
+      "checks": [
+        {
+          "method": "GET",
+          "path": "/api/health",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/clubs",
+          "status": 200
+        },
+        {
+          "check": "Zhengtu identity and cycling asset",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/register",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/admin/users",
+          "status": 403
+        },
+        {
+          "method": "GET",
+          "path": "/api/admin/users",
+          "status": 401
+        },
+        {
+          "check": "CSRF rejection",
+          "status": 403
+        },
+        {
+          "method": "GET",
+          "path": "/api/me/dashboard",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/applications/31/review",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/activities",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/activities/18/registrations",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/registrations/11/checkin",
+          "status": 400
+        },
+        {
+          "method": "POST",
+          "path": "/api/registrations/11/checkin",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/equipment",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/loans",
+          "status": 201
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/loans/17/review",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/loans/17/return",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/loans/17/review",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/equipment",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/repairs",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/repairs/11/progress",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/repairs/11/progress",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/repairs/11/progress",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/admin/reports",
+          "status": 200
+        },
+        {
+          "check": "CSV members",
+          "status": 200
+        },
+        {
+          "check": "CSV activities",
+          "status": 200
+        },
+        {
+          "check": "CSV equipment",
+          "status": 200
+        },
+        {
+          "check": "CSV repairs",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/applications/31/withdraw",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/logout",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "status": 401
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/equipment/19",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/activities/18",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/32/access",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/logout",
+          "status": 200
+        }
+      ],
+      "fixtureAccount": "cloudqa_mw8ki74u",
+      "fixtureAccountDisabled": true,
+      "qaActivityCancelled": true,
+      "qaEquipmentDisabled": true,
+      "notes": "Zhengtu club identity verified. QA equipment disabled, activity cancelled and account disabled. CSV response verified; browser download-to-disk not verified."
+    },
+    "superAdmin": {
+      "base": "https://zhengtu-cycling.onrender.com",
+      "completedAt": "2026-11-09T01:14:57.775Z",
+      "checks": [
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/register",
+          "status": 201
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/31/access",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/admin/reports",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/31/access",
+          "status": 403
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/1/profile",
+          "status": 403
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/31/profile",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/31/account",
+          "status": 403
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/31/account",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "status": 401
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/me/dashboard",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/me/dashboard",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/applications/30/withdraw",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/31/access",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/logout",
+          "status": 200
+        }
+      ],
+      "passed": 17,
+      "fixtureDisabled": true
+    },
+    "roomUsage": {
+      "base": "https://zhengtu-cycling.onrender.com",
+      "completedAt": "2026-11-09T01:16:39.527Z",
+      "passed": 19,
+      "checks": [
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/register",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/33/profile",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/me/dashboard",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 400
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 201
+        },
+        {
+          "method": "GET",
+          "path": "/api/riding-requests",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/riding-requests/35/review",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/riding-requests/35/review",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/riding-requests/36/review",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/riding-requests/37/review",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/riding-requests/38/review",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/applications/32/withdraw",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/33/access",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/logout",
+          "status": 200
+        }
+      ],
+      "aliases": [
+        "存车",
+        "放车",
+        "存放车辆",
+        "存取车辆"
+      ],
+      "canonicalUsage": "存取车辆",
+      "fixturesRejected": true,
+      "testAccountDisabled": true
+    },
+    "membership": {
+      "base": "https://zhengtu-cycling.onrender.com",
+      "completedAt": "2026-11-09T01:19:33.310Z",
+      "passed": 44,
+      "checks": [
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/health",
+          "status": 200
+        },
+        {
+          "check": "new site title",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/register",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/register",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 403
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/34/profile",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/35/profile",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/admin/users",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/me/dashboard",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/me/dashboard",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/equipment",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/loans",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/loans/18/cancel",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/loans",
+          "status": 201
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/loans/19/review",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 400
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 403
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/34/profile",
+          "status": 403
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/34/profile",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 403
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/riding-requests/42/review",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/api/loans/19/return",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/loans/19/review",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "check": "member export fields",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/riding-requests/42/review",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/riding-requests/43/review",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/equipment/20",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/me/dashboard",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/applications/33/withdraw",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/34/access",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/me/dashboard",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/applications/34/withdraw",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/35/access",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/logout",
+          "status": 200
+        }
+      ],
+      "fixtureAccountsDisabled": true,
+      "fixtureMembershipsWithdrawn": true,
+      "testRequestsRejected": true,
+      "testEquipmentDisabled": true
+    },
+    "ridingRequests": {
+      "base": "https://zhengtu-cycling.onrender.com",
+      "completedAt": "2026-11-09T01:18:14.526Z",
+      "passed": 23,
+      "checks": [
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/register",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/me/dashboard",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/applications/35/review",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/riding-requests",
+          "status": 401
+        },
+        {
+          "method": "GET",
+          "path": "/api/admin/riding-requests",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 400
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/riding-requests",
+          "status": 400
+        },
+        {
+          "method": "GET",
+          "path": "/api/admin/riding-requests",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/riding-requests/39/review",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/riding-requests",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/clubs",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/admin/applications",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/riding-requests/39/review",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/riding-requests/40/review",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/riding-requests/41/review",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/applications/35/withdraw",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/36/access",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/logout",
+          "status": 200
+        }
+      ],
+      "fixturesRejected": true,
+      "testAccountDisabled": true
+    }
+  },
+  "onlineChecks": 140,
+  "adminResponseTimes": {
+    "base": "https://zhengtu-cycling.onrender.com",
+    "completedAt": "2026-11-09T01:12:00.574Z",
+    "checks": [
+      {
+        "path": "/api/admin/reports",
+        "status": 200,
+        "durationMs": 4734
+      },
+      {
+        "path": "/api/admin/users",
+        "status": 200,
+        "durationMs": 3205,
+        "rows": 30
+      },
+      {
+        "path": "/api/admin/clubs",
+        "status": 200,
+        "durationMs": 2184,
+        "rows": 9
+      },
+      {
+        "path": "/api/admin/applications",
+        "status": 200,
+        "durationMs": 2866,
+        "rows": 29
+      },
+      {
+        "path": "/api/admin/activities",
+        "status": 200,
+        "durationMs": 2509,
+        "rows": 17
+      },
+      {
+        "path": "/api/admin/registrations",
+        "status": 200,
+        "durationMs": 4055,
+        "rows": 10
+      },
+      {
+        "path": "/api/admin/equipment",
+        "status": 200,
+        "durationMs": 2737,
+        "rows": 18
+      },
+      {
+        "path": "/api/admin/loans",
+        "status": 200,
+        "durationMs": 3012,
+        "rows": 16
+      },
+      {
+        "path": "/api/admin/repairs",
+        "status": 200,
+        "durationMs": 3057,
+        "rows": 10
+      },
+      {
+        "path": "/api/admin/riding-requests",
+        "status": 200,
+        "durationMs": 2344,
+        "rows": 34
+      },
+      {
+        "path": "/api/admin/reports/export?type=members",
+        "status": 200,
+        "durationMs": 2373,
+        "type": "text/csv;charset=UTF-8"
+      },
+      {
+        "path": "/api/admin/reports/export?type=activities",
+        "status": 200,
+        "durationMs": 3169,
+        "type": "text/csv;charset=UTF-8"
+      },
+      {
+        "path": "/api/admin/reports/export?type=equipment",
+        "status": 200,
+        "durationMs": 2207,
+        "type": "text/csv;charset=UTF-8"
+      },
+      {
+        "path": "/api/admin/reports/export?type=repairs",
+        "status": 200,
+        "durationMs": 2027,
+        "type": "text/csv;charset=UTF-8"
+      }
+    ]
+  },
+  "latestBrowserVerification": {
+    "browser": "Edge",
+    "adminOverview": "actual statistics visible",
+    "memberList": "records and membership filter visible",
+    "ridingRequests": "records and applicant column visible",
+    "overviewScreenshot": "screenshots/stability-admin.jpg"
+  },
+  "migration": {
+    "serviceId": "srv-dboc39dg1s2s73ep3uc0",
+    "deployId": "dep-dboc39lg1s2s73ep3v50",
+    "region": "oregon",
+    "plan": "free",
+    "url": "https://zhengtu-api-oregon.onrender.com",
+    "core": {
+      "base": "https://zhengtu-api-oregon.onrender.com",
+      "completedAt": "2026-11-08T18:46:25.548Z",
+      "checks": [
+        {
+          "method": "GET",
+          "path": "/api/health",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/clubs",
+          "status": 200
+        },
+        {
+          "check": "Zhengtu identity and cycling asset",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/register",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/admin/users",
+          "status": 403
+        },
+        {
+          "method": "GET",
+          "path": "/api/admin/users",
+          "status": 401
+        },
+        {
+          "check": "CSRF rejection",
+          "status": 403
+        },
+        {
+          "method": "GET",
+          "path": "/api/me/dashboard",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/applications/28/review",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/activities",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/activities/16/registrations",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/registrations/9/checkin",
+          "status": 400
+        },
+        {
+          "method": "POST",
+          "path": "/api/registrations/9/checkin",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/equipment",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/loans",
+          "status": 201
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/loans/15/review",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/loans/15/return",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/loans/15/review",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/equipment",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/repairs",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/repairs/9/progress",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/repairs/9/progress",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/repairs/9/progress",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/admin/reports",
+          "status": 200
+        },
+        {
+          "check": "CSV members",
+          "status": 200
+        },
+        {
+          "check": "CSV activities",
+          "status": 200
+        },
+        {
+          "check": "CSV equipment",
+          "status": 200
+        },
+        {
+          "check": "CSV repairs",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/applications/28/withdraw",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/logout",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "status": 401
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/equipment/17",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/activities/16",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/29/access",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/logout",
+          "status": 200
+        }
+      ],
+      "fixtureAccount": "cloudqa_mw86kn0l",
+      "fixtureAccountDisabled": true,
+      "qaActivityCancelled": true,
+      "qaEquipmentDisabled": true,
+      "notes": "Zhengtu club identity verified. QA equipment disabled, activity cancelled and account disabled. CSV response verified; browser download-to-disk not verified."
+    },
+    "automaticWake": {
+      "passed": true,
+      "standaloneJvmStartupSeconds": 80.098,
+      "throughPublicCdn": {
+        "idleShutdown": "2026-11-08T19:19:06+00:00",
+        "pageOpened": "2026-11-08T19:35:17.304+00:00",
+        "homepageVisibleMs": 2028,
+        "jvmStartDelayMs": 5186,
+        "appStartupSeconds": 74.996,
+        "authenticatedDataAndIframeRemovedAtMs": 117857
+      }
+    },
+    "coreThroughCdnBeforeOptimization": {
+      "base": "https://zhengtu-cycling.onrender.com",
+      "completedAt": "2026-11-08T19:42:08.936Z",
+      "checks": [
+        {
+          "method": "GET",
+          "path": "/api/health",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/clubs",
+          "status": 200
+        },
+        {
+          "check": "Zhengtu identity and cycling asset",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/register",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/admin/users",
+          "status": 403
+        },
+        {
+          "method": "GET",
+          "path": "/api/admin/users",
+          "status": 401
+        },
+        {
+          "check": "CSRF rejection",
+          "status": 403
+        },
+        {
+          "method": "GET",
+          "path": "/api/me/dashboard",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/applications/29/review",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/activities",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/activities/17/registrations",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/registrations/10/checkin",
+          "status": 400
+        },
+        {
+          "method": "POST",
+          "path": "/api/registrations/10/checkin",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/equipment",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/loans",
+          "status": 201
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/loans/16/review",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/loans/16/return",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/loans/16/review",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/equipment",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/repairs",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/repairs/10/progress",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/repairs/10/progress",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/admin/repairs/10/progress",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/admin/reports",
+          "status": 200
+        },
+        {
+          "check": "CSV members",
+          "status": 200
+        },
+        {
+          "check": "CSV activities",
+          "status": 200
+        },
+        {
+          "check": "CSV equipment",
+          "status": 200
+        },
+        {
+          "check": "CSV repairs",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/applications/29/withdraw",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/logout",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "status": 401
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/equipment/18",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/activities/17",
+          "status": 200
+        },
+        {
+          "method": "PUT",
+          "path": "/api/admin/users/30/access",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/logout",
+          "status": 200
+        }
+      ],
+      "fixtureAccount": "cloudqa_mw88jwjn",
+      "fixtureAccountDisabled": true,
+      "qaActivityCancelled": true,
+      "qaEquipmentDisabled": true,
+      "notes": "Zhengtu club identity verified. QA equipment disabled, activity cancelled and account disabled. CSV response verified; browser download-to-disk not verified."
+    }
+  },
+  "originalBackend": {
+    "sourceCommit": "950314d83c41322a7db217a70d409cd619c558f1",
+    "backendSourceCommit": "149d5c1b9dea15bf779d572a64f9c969d06bfc6f",
+    "publicDeploy": "dep-dboc61nf3r2c73aoesu0",
+    "backendDeploy": "dep-dbobn2ou01pc73eq31sg",
+    "onlineChecks": 140,
+    "reports": {
+      "core": {
+        "base": "https://zhengtu-cycling.onrender.com",
+        "completedAt": "2026-11-08T18:12:22.045Z",
+        "checks": [
+          {
+            "method": "GET",
+            "path": "/api/health",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/login",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/clubs",
+            "status": 200
+          },
+          {
+            "check": "Zhengtu identity and cycling asset",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/register",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/login",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/admin/users",
+            "status": 403
+          },
+          {
+            "method": "GET",
+            "path": "/api/admin/users",
+            "status": 401
+          },
+          {
+            "check": "CSRF rejection",
+            "status": 403
+          },
+          {
+            "method": "GET",
+            "path": "/api/me/dashboard",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/applications/22/review",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/admin/activities",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/activities/15/registrations",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/registrations/8/checkin",
+            "status": 400
+          },
+          {
+            "method": "POST",
+            "path": "/api/registrations/8/checkin",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/admin/equipment",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/loans",
+            "status": 201
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/loans/12/review",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/loans/12/return",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/loans/12/review",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/equipment",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/repairs",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/admin/repairs/8/progress",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/admin/repairs/8/progress",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/admin/repairs/8/progress",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/admin/reports",
+            "status": 200
+          },
+          {
+            "check": "CSV members",
+            "status": 200
+          },
+          {
+            "check": "CSV activities",
+            "status": 200
+          },
+          {
+            "check": "CSV equipment",
+            "status": 200
+          },
+          {
+            "check": "CSV repairs",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/applications/22/withdraw",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/logout",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/auth/me",
+            "status": 401
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/equipment/15",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/activities/15",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/23/access",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/logout",
+            "status": 200
+          }
+        ],
+        "fixtureAccount": "cloudqa_mw85fe24",
+        "fixtureAccountDisabled": true,
+        "qaActivityCancelled": true,
+        "qaEquipmentDisabled": true,
+        "notes": "Zhengtu club identity verified. QA equipment disabled, activity cancelled and account disabled. CSV response verified; browser download-to-disk not verified."
+      },
+      "superAdmin": {
+        "base": "https://zhengtu-cycling.onrender.com",
+        "completedAt": "2026-11-08T18:14:00.687Z",
+        "checks": [
+          {
+            "method": "POST",
+            "path": "/api/auth/login",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/register",
+            "status": 201
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/24/access",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/login",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/admin/reports",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/24/access",
+            "status": 403
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/1/profile",
+            "status": 403
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/24/profile",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/24/account",
+            "status": 403
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/24/account",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/auth/me",
+            "status": 401
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/login",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/me/dashboard",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/me/dashboard",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/applications/23/withdraw",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/24/access",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/logout",
+            "status": 200
+          }
+        ],
+        "passed": 17,
+        "fixtureDisabled": true
+      },
+      "roomUsage": {
+        "base": "https://zhengtu-cycling.onrender.com",
+        "completedAt": "2026-11-08T18:15:14.206Z",
+        "passed": 19,
+        "checks": [
+          {
+            "method": "POST",
+            "path": "/api/auth/login",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/register",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/login",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/25/profile",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/me/dashboard",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 400
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 201
+          },
+          {
+            "method": "GET",
+            "path": "/api/riding-requests",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/riding-requests/26/review",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/riding-requests/26/review",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/riding-requests/27/review",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/riding-requests/28/review",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/riding-requests/29/review",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/applications/24/withdraw",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/25/access",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/logout",
+            "status": 200
+          }
+        ],
+        "aliases": [
+          "存车",
+          "放车",
+          "存放车辆",
+          "存取车辆"
+        ],
+        "canonicalUsage": "存取车辆",
+        "fixturesRejected": true,
+        "testAccountDisabled": true
+      },
+      "membership": {
+        "base": "https://zhengtu-cycling.onrender.com",
+        "completedAt": "2026-11-08T18:15:50.811Z",
+        "passed": 44,
+        "checks": [
+          {
+            "method": "POST",
+            "path": "/api/auth/login",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/health",
+            "status": 200
+          },
+          {
+            "check": "new site title",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/register",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/login",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/register",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/login",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 403
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/26/profile",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/27/profile",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/admin/users",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/me/dashboard",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/me/dashboard",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/admin/equipment",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/loans",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/loans/13/cancel",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/loans",
+            "status": 201
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/loans/14/review",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 400
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 403
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 403
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 403
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 403
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 403
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/26/profile",
+            "status": 403
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/26/profile",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 403
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/riding-requests/30/review",
+            "status": 403
+          },
+          {
+            "method": "POST",
+            "path": "/api/loans/14/return",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/loans/14/review",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "check": "member export fields",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/riding-requests/30/review",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/riding-requests/31/review",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/equipment/16",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/me/dashboard",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/applications/25/withdraw",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/26/access",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/me/dashboard",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/applications/26/withdraw",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/27/access",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/logout",
+            "status": 200
+          }
+        ],
+        "fixtureAccountsDisabled": true,
+        "fixtureMembershipsWithdrawn": true,
+        "testRequestsRejected": true,
+        "testEquipmentDisabled": true
+      },
+      "ridingRequests": {
+        "base": "https://zhengtu-cycling.onrender.com",
+        "completedAt": "2026-11-08T18:16:55.692Z",
+        "passed": 23,
+        "checks": [
+          {
+            "method": "POST",
+            "path": "/api/auth/login",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/register",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/login",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/me/dashboard",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/applications/27/review",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/riding-requests",
+            "status": 401
+          },
+          {
+            "method": "GET",
+            "path": "/api/admin/riding-requests",
+            "status": 403
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 400
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 201
+          },
+          {
+            "method": "POST",
+            "path": "/api/riding-requests",
+            "status": 400
+          },
+          {
+            "method": "GET",
+            "path": "/api/admin/riding-requests",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/riding-requests/32/review",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/riding-requests",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/clubs",
+            "status": 200
+          },
+          {
+            "method": "GET",
+            "path": "/api/admin/applications",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/riding-requests/32/review",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/riding-requests/33/review",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/riding-requests/34/review",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/applications/27/withdraw",
+            "status": 200
+          },
+          {
+            "method": "PUT",
+            "path": "/api/admin/users/28/access",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/logout",
+            "status": 200
+          }
+        ],
+        "fixturesRejected": true,
+        "testAccountDisabled": true
+      }
+    }
+  }
+}

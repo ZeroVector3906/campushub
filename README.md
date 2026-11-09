@@ -1,10 +1,12 @@
 # 西安欧亚学院征途单车俱乐部&社团 · 综合管理网站
 
-服务于西安欧亚学院征途单车俱乐部的完整应用，实际连接 PostgreSQL，使用 **Java 21、Spring Boot 3.5、Spring Data JPA、Spring Security、Vue 3、Vite、Element Plus**。前端构建后打包进同一个 Spring Boot JAR，电脑、手机使用同一个站点。
+服务于西安欧亚学院征途单车俱乐部的完整应用，实际连接 PostgreSQL，使用 **Java 21、Spring Boot 3.5、Spring Data JPA、Spring Security、Vue 3、Vite、Element Plus**。支持前端打包到 Spring Boot JAR，也支持独立 CDN 页面配合同源 API 代理。当前公网采用后者，电脑、手机使用同一个入口。
 
 ## 立即访问
 
-公网网站：[征途单车俱乐部](https://campushub-2ar9.onrender.com/#/)；[俱乐部介绍](https://campushub-2ar9.onrender.com/#/clubs)；[管理员后台](https://campushub-2ar9.onrender.com/#/admin)。部署于 Render，数据库运行于 Neon，不依赖本机开机。当前版本与实际验证范围见 [征途专属改版说明](docs/征途专属改版.md)，简介内容取舍见 [简介内容整理](docs/简介内容整理.md)。免费实例空闲后可能休眠，再次打开需要等待冷启动。
+[征途网站首页](https://zhengtu-cycling.onrender.com/#/) · [俱乐部介绍](https://zhengtu-cycling.onrender.com/#/clubs) · [管理员后台](https://zhengtu-cycling.onrender.com/#/admin)
+
+公开页面由 Render 免费 CDN 提供，业务服务使用 Java 21 和原 Neon PostgreSQL。业务服务休眠后，首页仍可打开，首次登录或提交申请可能需要等待约 1–2 分钟。页面会提示连接状态并尝试恢复。 [公网稳定性修复与验收](docs/公网稳定性修复.md) · [征途专属改版](docs/征途专属改版.md) · [简介内容整理](docs/简介内容整理.md)
 
 本机预览地址：[http://localhost:8080/#/](http://localhost:8080/#/)。这是本机地址，只在运行网站的电脑上可用。
 
@@ -25,7 +27,7 @@
 
 2026-11-08 增加俱乐部 / 社团注册选择、首页权益责任对比及管理员成员资料编辑，移除成员中心的「我的俱乐部」。场地申请按审核后的身份限制，器材申请权限保持原流程不变。旧账号待管理员确认类别，密码和历史记录保留。详见 [俱乐部与社团身份管理](docs/俱乐部与社团身份.md)。
 
-2026-11-08 新增：[活动建议](https://campushub-2ar9.onrender.com/#/suggestions)、[骑行室使用申请](https://campushub-2ar9.onrender.com/#/rooms)，管理员在「活动建议 / 骑行室」查看和处理。入社申请增加联系方式、年级和学院。操作及 API 说明见 [骑行申请功能](docs/骑行申请功能.md)。
+2026-11-08 新增：[活动建议](https://zhengtu-cycling.onrender.com/#/suggestions)、[骑行室使用申请](https://zhengtu-cycling.onrender.com/#/rooms)，管理员在「活动建议 / 骑行室」查看和处理。入社申请增加联系方式、年级和学院。操作及 API 说明见 [骑行申请功能](docs/骑行申请功能.md)。
 
 | 模块 | 学生端 | 管理员端 |
 | --- | --- | --- |
