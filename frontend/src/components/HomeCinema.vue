@@ -114,47 +114,9 @@ onBeforeUnmount(() => {
           <div class="zt-actions cinema-actions"><slot /></div>
         </div>
         <div class="cinema-bike">
-          <svg class="bike-entry" viewBox="0 0 660 370" fill="none" role="img" aria-labelledby="road-bike-title">
-            <title id="road-bike-title">专业公路车侧视图</title>
-            <defs>
-              <linearGradient id="road-frame" x1="210" y1="99" x2="430" y2="295" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#effaff"/><stop offset=".37" stop-color="#9dbacb"/>
-                <stop offset=".63" stop-color="#405a6e"/><stop offset="1" stop-color="#78d6e4"/>
-              </linearGradient>
-              <linearGradient id="road-rim" x2="1" y2="1">
-                <stop stop-color="#b4d5e1"/><stop offset=".52" stop-color="#253e50"/><stop offset="1" stop-color="#91b7c8"/>
-              </linearGradient>
-              <g id="road-wheel">
-                <circle r="104" fill="#091724" fill-opacity=".36" stroke="#1a2937" stroke-width="9"/>
-                <circle r="103" stroke="#aec7d2" stroke-opacity=".65" stroke-width="1.5"/>
-                <circle r="97" stroke="url(#road-rim)" stroke-width="8"/>
-                <path d="M0-92V92M-92 0H92M-65-65L65 65M-65 65L65-65M-35-85L35 85M-85-35L85 35M-85 35L85-35M-35 85L35-85" stroke="#a4c6d4" stroke-opacity=".46"/>
-                <circle r="22" stroke="#9dbcc8" stroke-width="3" stroke-dasharray="5 2"/>
-                <circle r="6" fill="#c2dae2" stroke="#314858" stroke-width="2"/>
-              </g>
-            </defs>
-            <path d="M16 346H642" stroke="#83d8e7" stroke-opacity=".24"/>
-            <use href="#road-wheel" x="128" y="238"/>
-            <use href="#road-wheel" x="533" y="238"/>
-            <g stroke-linecap="round" stroke-linejoin="round">
-              <path d="M128 238L240 112L280 266L128 238Z" stroke="url(#road-frame)" stroke-width="10"/>
-              <path d="M235 107Q312 96 448 79L461 121Q443 131 423 151L289 271L276 259L426 114Q437 102 415 103L242 122Z"
-                fill="url(#road-frame)" stroke="#c5e1e9" stroke-opacity=".55" stroke-width="1.5"/>
-              <path d="M240 111L219 53M459 119Q471 129 481 149L533 238" stroke="url(#road-frame)" stroke-width="14"/>
-              <path d="M459 119Q471 129 481 149L533 238" stroke="#b7d3e0" stroke-opacity=".58" stroke-width="3"/>
-              <path d="M193 46Q208 43 227 48L252 48Q256 48 260 54L220 58Q203 55 193 46Z" fill="#c0d6df" stroke="#304b5d" stroke-width="2"/>
-              <path d="M446 79L439 61L483 49" stroke="#8faab8" stroke-width="10"/>
-              <path d="M479 50C502 39 536 40 550 52C566 66 556 94 521 101" stroke="#8ca7b7" stroke-width="10"/>
-              <path d="M481 50C503 41 536 42 550 52C566 66 556 94 521 101" stroke="#273e50" stroke-width="7" stroke-dasharray="5 2"/>
-              <path d="M548 50Q567 45 573 34Q583 30 585 41L575 55L578 80" stroke="#bed1dc" stroke-width="5"/>
-              <path d="M575 55L583 89" stroke="#6f8d9f" stroke-width="3"/>
-              <path d="M128 225L278 247M128 252L278 285" stroke="#9bb4bf" stroke-width="2" stroke-dasharray="3 2"/>
-              <circle cx="280" cy="266" r="23" fill="#122531" stroke="#abc6d1" stroke-width="4" stroke-dasharray="4 1"/>
-              <circle cx="280" cy="266" r="14" stroke="#7290a2" stroke-width="3"/>
-              <path d="M280 266L316 273H329M118 246L111 269L122 271" stroke="#a6c1cc" stroke-width="5"/>
-            </g>
-            <text x="332" y="222" transform="rotate(-43 332 222)" fill="#132d3c" font-size="10" font-weight="700" letter-spacing="2">ZHENGTU</text>
-          </svg>
+          <img class="bike-entry" src="/images/zhengtu-neon-road-bike.jpg"
+            width="1200" height="630" alt="霓虹蓝银专业公路赛车侧视图"
+            fetchpriority="high" decoding="async">
         </div>
         <div class="cinema-meter" aria-hidden="true"><span>向下滚动 · 进入征途</span><i></i></div>
       </div>
@@ -202,7 +164,7 @@ onBeforeUnmount(() => {
 .cinema-description, .history-card p { color: #bccfd7; line-height: 1.7; }
 .cinema-inner .cinema-actions { justify-content: flex-start; display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
 .cinema-actions :deep(.zt-secondary) { color: #e5f9ff; border-color: #81bfce80; background: #0b1d28; }
-.cinema-bike { min-width: 0; pointer-events: none; }
+.cinema-bike { min-width: 0; pointer-events: none; mix-blend-mode: screen; }
 .bike-entry { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 12px #41c6ee50); }
 .cinema-meter { grid-column: 1 / -1; margin-top: clamp(0px, 3vw, 36px); display: grid; gap: 12px; font-size: .75rem; color: #bad2de; }
 .cinema-meter i { display: block; width: 100%; height: 1px; transform-origin: left; background: linear-gradient(90deg,#77edff,#77edff22); }
