@@ -26,7 +26,15 @@ public class MemberPolicy {
     public static void validateType(String type){if(!Set.of("CLUB","SOCIETY").contains(Objects.toString(type,"")))throw ApiException.bad("请选择加入俱乐部或社团");}
     public static void validateDivision(String type,String division){if(!Set.of("","课程部","活动部","宣传部").contains(Objects.toString(division,"")))throw ApiException.bad("俱乐部部门无效");if(!type.equals("CLUB")&&division!=null&&!division.isBlank())throw ApiException.bad("社团成员不分配俱乐部部门");}
     public Map<String,Object> view(User u){
-        var out=ApiViews.user(u);var m=membership(u.id);
+        return memberView(u,membership(u.id));
+    }
+    public List<Map<String,Object>> views(List<User> people){
+        var byUser=new HashMap<Long,Membership>();
+        primaryClub().ifPresent(c->memberships.findByClubId(c.id).forEach(m->byUser.put(m.userId,m)));
+        return people.stream().map(u->memberView(u,Optional.ofNullable(byUser.get(u.id)))).toList();
+    }
+    private Map<String,Object> memberView(User u,Optional<Membership> m){
+        var out=ApiViews.user(u);
         out.put("memberStatus",m.map(x->x.status).orElse("NONE"));out.put("memberType",m.map(x->x.joinType).orElse(u.joinType));
         out.put("clubDivision",m.map(x->x.clubDivision).orElse(""));out.put("memberNote",m.map(x->x.reviewNote).orElse(""));
         String type=m.filter(x->x.status.equals("APPROVED")).map(x->x.joinType).orElse("UNASSIGNED");

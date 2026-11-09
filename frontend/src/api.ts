@@ -22,7 +22,7 @@ export function resetCsrf(){csrfToken=''}
 async function request(path:string,options:RequestInit={},timeoutMs=12000):Promise<Response>{
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs)
   try{
-    const response=await fetch('/api'+path,{...options,credentials:'same-origin',cache:'no-store',signal:controller.signal})
+    const response=await fetch('/api'+path,{...options,credentials:path==='/health'?'omit':'same-origin',cache:'no-store',signal:controller.signal})
     const text=await response.text()
     if(!response.headers.get('content-type')?.includes('application/json'))throw new ApiError(503,'服务正在启动或暂时不可用，请稍后重新连接')
     let data:unknown

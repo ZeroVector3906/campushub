@@ -20,6 +20,9 @@ interface MembershipRepository extends JpaRepository<Membership, Long> {
     Optional<Membership> findByUserIdAndClubId(Long userId, Long clubId);
     long countByClubIdAndStatus(Long clubId, String status);
     long countByStatus(String status);
+    List<Membership> findByClubId(Long clubId);
+    @Query("select m.clubId, count(m) from Membership m where m.status = 'APPROVED' group by m.clubId")
+    List<Object[]> approvedClubCounts();
 }
 interface ActivityRepository extends JpaRepository<Activity, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE) @Query("select a from Activity a where a.id = :id")
@@ -32,6 +35,8 @@ interface RegistrationRepository extends JpaRepository<Registration, Long> {
     Optional<Registration> findByUserIdAndActivityId(Long userId, Long activityId);
     long countByActivityId(Long activityId);
     long countByCheckedInAtIsNotNull();
+    @Query("select r.activityId, count(r) from Registration r group by r.activityId")
+    List<Object[]> activityCounts();
 }
 interface EquipmentRepository extends JpaRepository<Equipment, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE) @Query("select e from Equipment e where e.id = :id")
@@ -49,4 +54,5 @@ interface RepairRepository extends JpaRepository<RepairTicket, Long> {
 }
 interface RepairUpdateRepository extends JpaRepository<RepairUpdate, Long> {
     List<RepairUpdate> findByTicketIdOrderByCreatedAtAsc(Long ticketId);
+    List<RepairUpdate> findByTicketIdInOrderByCreatedAtAsc(Collection<Long> ticketIds);
 }

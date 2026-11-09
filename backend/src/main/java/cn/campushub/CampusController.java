@@ -24,12 +24,12 @@ public class CampusController {
     final FindByIndexNameSessionRepository<? extends Session> sessions;
     public CampusController(CampusService s,ApiViews views,AuthController auth,PasswordEncoder encoder,FindByIndexNameSessionRepository<? extends Session> sessions,MemberPolicy members,AccountAuthority authority,org.springframework.jdbc.core.JdbcTemplate jdbc) { this.authority=authority;this.jdbc=jdbc;this.members=members;this.s=s;this.views=views;this.auth=auth;this.encoder=encoder;this.sessions=sessions; }
     @GetMapping("/health") Map<String,String> health() { return Map.of("status","UP","application","CampusHub","club","西安欧亚学院征途单车俱乐部&社团"); }
-    @GetMapping("/clubs") List<?> clubs() { return s.clubs().findAll().stream().filter(c -> c.active).map(views::club).toList(); }
+    @GetMapping("/clubs") List<?> clubs() { return views.clubRows(s.clubs().findAll().stream().filter(c -> c.active).toList()); }
     private Set<Long> activeClubIds() { return s.clubs().findAll().stream().filter(c -> c.active).map(c -> c.id).collect(java.util.stream.Collectors.toSet()); }
     @GetMapping("/activities") List<?> activities() {
         var clubIds=activeClubIds();
-        return s.activities().findAll().stream().filter(a -> clubIds.contains(a.clubId) && a.status.equals("PUBLISHED"))
-            .sorted(Comparator.comparing(a -> a.startsAt)).map(a -> views.activity(a,false)).toList();
+        return views.activityRows(s.activities().findAll().stream().filter(a -> clubIds.contains(a.clubId) && a.status.equals("PUBLISHED"))
+            .sorted(Comparator.comparing(a -> a.startsAt)).toList(),false);
     }
     @GetMapping("/equipment") List<?> equipment() { return s.equipment().findAll().stream().filter(e -> e.active).map(ApiViews::equipment).toList(); }
     @GetMapping("/public/overview") Map<String,Object> overview() {
@@ -41,10 +41,10 @@ public class CampusController {
             "equipmentCount",s.equipment().findAll().stream().filter(e -> e.active).mapToInt(e -> e.totalQuantity).sum());
     }
     @GetMapping("/me/dashboard") Map<String,Object> mine(Authentication a) {
-        var u=auth.current(a);return v("member",members.view(u),"memberships",s.memberships().findByUserIdOrderByCreatedAtDesc(u.id).stream().map(views::membership).toList(),
-            "registrations",s.registrations().findByUserIdOrderByCreatedAtDesc(u.id).stream().map(views::registration).toList(),
-            "loans",s.loans().findByUserIdOrderByCreatedAtDesc(u.id).stream().map(views::loan).toList(),
-            "repairs",s.repairs().findByUserIdOrderByCreatedAtDesc(u.id).stream().map(views::repair).toList());
+        var u=auth.current(a);return v("member",members.view(u),"memberships",views.membershipRows(s.memberships().findByUserIdOrderByCreatedAtDesc(u.id)),
+            "registrations",views.registrationRows(s.registrations().findByUserIdOrderByCreatedAtDesc(u.id)),
+            "loans",views.loanRows(s.loans().findByUserIdOrderByCreatedAtDesc(u.id)),
+            "repairs",views.repairRows(s.repairs().findByUserIdOrderByCreatedAtDesc(u.id)));
     }
     @PutMapping("/me/profile") @Transactional Map<String,Object> profile(Authentication a,@Valid @RequestBody Requests.Profile input) {
         var u=auth.current(a);String email=input.email().toLowerCase(Locale.ROOT).trim();
@@ -70,14 +70,14 @@ public class CampusController {
     @PostMapping("/loans/{id}/cancel") Map<String,Object> cancelLoan(Authentication a,@PathVariable Long id) { return views.loan(s.loanAction(auth.current(a),id,false)); }
     @PostMapping("/repairs") @ResponseStatus(HttpStatus.CREATED) Map<String,Object> repair(Authentication a,@Valid @RequestBody Requests.RepairInput input) { return views.repair(s.repair(auth.current(a),input)); }
 
-    @GetMapping("/admin/clubs") List<?> adminClubs() { return s.clubs().findAll().stream().map(views::club).toList(); }
-    @GetMapping("/admin/activities") List<?> adminActivities() { return s.activities().findAll().stream().sorted(Comparator.comparing((Activity a)->a.createdAt).reversed()).map(a->views.activity(a,true)).toList(); }
+    @GetMapping("/admin/clubs") List<?> adminClubs() { return views.clubRows(s.clubs().findAll()); }
+    @GetMapping("/admin/activities") List<?> adminActivities() { return views.activityRows(s.activities().findAll().stream().sorted(Comparator.comparing((Activity a)->a.createdAt).reversed()).toList(),true); }
     @GetMapping("/admin/equipment") List<?> adminEquipment() { return s.equipment().findAll().stream().map(ApiViews::equipment).toList(); }
-    @GetMapping("/admin/applications") List<?> adminApplications() { return s.memberships().findAll().stream().sorted(Comparator.comparing((Membership m)->m.createdAt).reversed()).map(views::membership).toList(); }
-    @GetMapping("/admin/registrations") List<?> adminRegistrations() { return s.registrations().findAll().stream().map(views::registration).toList(); }
-    @GetMapping("/admin/loans") List<?> adminLoans() { return s.loans().findAll().stream().sorted(Comparator.comparing((Loan l)->l.createdAt).reversed()).map(views::loan).toList(); }
-    @GetMapping("/admin/repairs") List<?> adminRepairs() { return s.repairs().findAll().stream().sorted(Comparator.comparing((RepairTicket t)->t.createdAt).reversed()).map(views::repair).toList(); }
-    @GetMapping("/admin/users") List<?> adminUsers() { return s.users().findAll().stream().map(members::view).toList(); }
+    @GetMapping("/admin/applications") List<?> adminApplications() { return views.membershipRows(s.memberships().findAll().stream().sorted(Comparator.comparing((Membership row)->row.createdAt).reversed()).toList()); }
+    @GetMapping("/admin/registrations") List<?> adminRegistrations() { return views.registrationRows(s.registrations().findAll()); }
+    @GetMapping("/admin/loans") List<?> adminLoans() { return views.loanRows(s.loans().findAll().stream().sorted(Comparator.comparing((Loan row)->row.createdAt).reversed()).toList()); }
+    @GetMapping("/admin/repairs") List<?> adminRepairs() { return views.repairRows(s.repairs().findAll().stream().sorted(Comparator.comparing((RepairTicket row)->row.createdAt).reversed()).toList()); }
+    @GetMapping("/admin/users") List<?> adminUsers() { return members.views(s.users().findAll()); }
     @PutMapping("/admin/users/{id}/access") @Transactional Map<String,Object> access(Authentication a,@PathVariable Long id,@Valid @RequestBody Requests.UserAccess input) {
         authority.requireSuper(a);jdbc.execute("SELECT pg_advisory_xact_lock(804211)");CampusService.requireStatus(input.role(),"STUDENT","ADMIN","SUPER_ADMIN");var me=auth.current(a);
 

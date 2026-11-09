@@ -27,17 +27,18 @@ interface RidingRequestRepository extends JpaRepository<RidingRequest,Long> {
 @RestController @RequestMapping("/api")
 public class RidingRequestController {
     private final MemberPolicy members;
+    private final ApiViews views;
     private final RidingRequestRepository requests;
     private final AuthController auth;
     private final UserRepository users;
-    public RidingRequestController(RidingRequestRepository requests,AuthController auth,UserRepository users,MemberPolicy members){this.members=members;this.requests=requests;this.auth=auth;this.users=users;}
+    public RidingRequestController(RidingRequestRepository requests,AuthController auth,UserRepository users,MemberPolicy members,ApiViews views){this.views=views;this.members=members;this.requests=requests;this.auth=auth;this.users=users;}
     public record Input(@NotBlank String kind,@NotBlank @Size(max=120) String title,
         @NotBlank @Size(max=2000) String description,@NotBlank @Size(max=120) String contact,
         @Size(max=40) String room,@Size(max=20) String usage,@Size(max=200) String otherUsage,
         Instant startsAt,Instant endsAt) {}
-    private Map<String,Object> view(RidingRequest r){return ApiViews.v("id",r.id,"user",users.findById(r.userId).map(ApiViews::user).orElse(null),"kind",r.kind,"title",r.title,"description",r.description,"contact",r.contact,"room",r.room,"usage",MemberPolicy.normalizeUsage(r.usage),"otherUsage",r.otherUsage,"startsAt",r.startsAt,"endsAt",r.endsAt,"status",r.status,"reviewNote",r.reviewNote,"reviewedAt",r.reviewedAt,"createdAt",r.createdAt);}
-    @GetMapping("/riding-requests") public List<?> mine(Authentication a){return requests.findByUserIdOrderByCreatedAtDesc(auth.current(a).id).stream().map(this::view).toList();}
-    @GetMapping("/admin/riding-requests") public List<?> all(){return requests.findAllByOrderByCreatedAtDesc().stream().map(this::view).toList();}
+    private Map<String,Object> view(RidingRequest r){return ApiViews.v("id",r.id,"user",views.person(r.userId),"kind",r.kind,"title",r.title,"description",r.description,"contact",r.contact,"room",r.room,"usage",MemberPolicy.normalizeUsage(r.usage),"otherUsage",r.otherUsage,"startsAt",r.startsAt,"endsAt",r.endsAt,"status",r.status,"reviewNote",r.reviewNote,"reviewedAt",r.reviewedAt,"createdAt",r.createdAt);}
+    @GetMapping("/riding-requests") public List<?> mine(Authentication a){var rows=requests.findByUserIdOrderByCreatedAtDesc(auth.current(a).id);views.prepareUsers(rows.stream().map(r->r.userId).toList());return rows.stream().map(this::view).toList();}
+    @GetMapping("/admin/riding-requests") public List<?> all(){var rows=requests.findAllByOrderByCreatedAtDesc();views.prepareUsers(rows.stream().map(r->r.userId).toList());return rows.stream().map(this::view).toList();}
     @PostMapping("/riding-requests") @ResponseStatus(HttpStatus.CREATED) @Transactional
     public Map<String,Object> create(Authentication a,@Valid @RequestBody Input x){
         if(!Set.of("ROOM","SUGGESTION").contains(x.kind()))throw ApiException.bad("申请类型无效");
