@@ -17,10 +17,16 @@ const services=[{path:'/rooms',icon:'bike',title:'骑行室使用',text:'存取�
 
 <template>
  <div class="page-content zt-home">
-  <HomeCinema>
-    <router-link v-if="showGuestRecruitment" to="/clubs" class="zt-primary">了解征途 · 申请加入<Icon name="right" :size="17"/></router-link>
+  <HomeCinema v-if="showGuestRecruitment">
+    <router-link to="/clubs" class="zt-primary">了解征途 · 申请加入<Icon name="right" :size="17"/></router-link>
     <router-link to="/activities" class="zt-secondary">查看骑行活动<Icon name="right" :size="17"/></router-link>
   </HomeCinema>
+  <section v-else class="home-section member-home-heading" aria-labelledby="member-home-title">
+    <div class="section-heading">
+      <div><div class="eyebrow">西安欧亚学院征途单车俱乐部&amp;社团</div><h1 id="member-home-title">骑行概览</h1></div>
+      <router-link to="/activities" class="text-link">查看骑行活动<Icon name="right" :size="17"/></router-link>
+    </div>
+  </section>
   <div class="zt-stat-grid"><div v-for="(s,i) in stats" :key="s.label" v-reveal="{delay:i*60}"><b>{{s.value??'—'}}<small>{{s.unit}}</small></b><span>{{s.label}}</span></div></div>
   <section class="zt-story"><div class="story-copy" v-reveal><div class="eyebrow">关于征途</div><h2>从校园出发。<br><span>让世界成为你的风景。</span></h2><p>{{profile.brief}}</p><router-link to="/clubs" class="text-link">认识征途单车俱乐部<Icon name="right" :size="17"/></router-link><div class="zt-values"><span><Icon name="shield" :size="18"/>安全同行</span><span><Icon name="users" :size="18"/>团队协作</span><span><Icon name="mountain" :size="18"/>探索成长</span></div></div><figure v-reveal="{kind:'image'}"><img src="/images/zhengtu-anniversary.jpg" alt="征途单车俱乐部十周年自行车运动文化活动现场" loading="lazy"><figcaption>十周年活动现场 · 简介资料图</figcaption></figure></section>
   <MemberComparison v-if="showGuestRecruitment"/>
