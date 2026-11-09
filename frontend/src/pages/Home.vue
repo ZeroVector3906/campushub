@@ -37,3 +37,9 @@ const services=[{path:'/rooms',icon:'bike',title:'骑行室使用',text:'存取�
  </div>
  <el-dialog v-model="guide" title="征途入社与活动指引" width="min(590px,94vw)"><div class="guide-content"><h3>01 · 提交入社申请</h3><p>注册时选择加入俱乐部或社团并填写资料，招新开放时会提交待审核申请。已有账号可在俱乐部展示申请加入或查看审核结果；成员中心仅保留身份状态和活动、借还记录。</p><h3>02 · 报名与签到</h3><p>查看已发布活动的时间、集合地点和说明，按需报名。签到开放期间，在成员中心输入现场负责人提供的签到码。</p><h3>03 · 器材借还与报修</h3><p>按实际库存申请器材，经审核后领取；使用后提交归还申请，等待管理员验收。器材问题可在线提交报修工单。</p><h3>出发前</h3><p>请阅读具体活动安排，检查车辆与装备，遵守交通规则。未发布的路线、时间和联系方式以俱乐部确认信息为准。</p></div><template #footer><el-button type="primary" @click="guide=false;router.push('/clubs')">前往入社申请</el-button></template></el-dialog>
 </template>
+
+<style scoped>
+.zt-home .member-home-heading { margin-block: 24px 16px; }
+.member-home-heading .section-heading { margin-bottom: 0; }
+.member-home-heading + .zt-stat-grid { margin-top: 0; }
+</style>
