@@ -27,3 +27,6 @@
  .page-enter-from,[data-reveal="pending"]{opacity:1;transform:none;translate:none}
  [data-reveal="pending"][data-reveal-kind="image"]>img{transform:none}
 }
+
+/* Fixed homepage scenes need an untransformed route ancestor during entry. */
+.page-enter-from:has(.home-cinema){transform:none}
