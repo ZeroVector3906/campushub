@@ -8,6 +8,10 @@ const milestones = [
   ...clubHistoryItems.map(item => ({ date: item.year, title: item.title, summary: item.summary, url: '' })),
   ...[...clubNews].reverse(),
 ]
+const yearOf = (date: string) => date.match(/\d{4}/)?.[0] ?? date
+const yearGroups = [...new Set(milestones.map(item => yearOf(item.date)))]
+  .sort((a, b) => Number(a) - Number(b))
+  .map(year => ({ year, items: milestones.filter(item => yearOf(item.date) === year) }))
 
 let disposed = false
 let cleanup: (() => void) | undefined
@@ -60,7 +64,7 @@ onMounted(async () => {
         .to('.cinema-glow', { xPercent: desktop ? -24 : -8, opacity: 0.4 }, 0)
         .fromTo('.cinema-meter i', { scaleX: 0 }, { scaleX: 1 }, 0)
 
-      for (const card of scene.querySelectorAll('.history-card')) {
+      for (const card of scene.querySelectorAll('.history-year-card')) {
         gsap.from(card, {
           y: desktop ? 38 : 14, opacity: 0.48, ease: 'none',
           scrollTrigger: { trigger: card, start: 'top 95%', end: 'top 65%', scrub: true },
@@ -126,11 +130,14 @@ onBeforeUnmount(() => {
         <header><p class="cinema-label">ZHENGTU / MILESTONES</p><h2 id="history-title">一路骑来。</h2></header>
         <ol class="history-list">
           <li class="history-track" aria-hidden="true"><i class="history-progress"></i></li>
-          <li v-for="item in milestones" :key="`${item.date}-${item.title}`" class="history-card">
-            <span>{{ item.date }}</span>
-            <div><h3>{{ item.title }}</h3><p>{{ item.summary }}</p>
-              <a v-if="item.url" :href="item.url" target="_blank" rel="noopener noreferrer">阅读学校报道 ↗</a>
-            </div>
+          <li v-for="group in yearGroups" :key="group.year" class="history-year-card">
+            <span class="history-year-label">{{ group.year }}</span>
+            <ul class="history-year-facts">
+              <li v-for="item in group.items" :key="`${item.date}-${item.title}-${item.summary}`" class="history-year-fact">
+                <h3>{{ item.title }}</h3><p>{{ item.summary }}</p>
+                <a v-if="item.url" :href="item.url" target="_blank" rel="noopener noreferrer">阅读学校报道 ↗</a>
+              </li>
+            </ul>
           </li>
         </ol>
       </div>
@@ -160,7 +167,7 @@ onBeforeUnmount(() => {
 .cinema-label { color: #8ed7e4; font: 600 .73rem/1.5 ui-monospace, monospace; letter-spacing: .15em; }
 .cinema-copy h1 { color: #fff; font-size: clamp(3rem, 7vw, 7rem); line-height: 1; margin: .24em 0; letter-spacing: -.07em; }
 .cinema-copy h1 span { color: #93eaff; background: linear-gradient(110deg,#edfcff,#56d7f0); background-clip: text; -webkit-text-fill-color: transparent; }
-.cinema-description, .history-card p { color: #bccfd7; line-height: 1.7; }
+.cinema-description, .history-year-fact p { color: #bccfd7; line-height: 1.7; }
 .cinema-inner .cinema-actions { justify-content: flex-start; display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
 .cinema-actions :deep(.zt-secondary) { color: #e5f9ff; border-color: #81bfce80; background: #0b1d28; }
 .cinema-bike { min-width: 0; padding: 5%; pointer-events: none; mix-blend-mode: screen; }
@@ -173,14 +180,17 @@ onBeforeUnmount(() => {
 .history-list { position: relative; margin: 0; padding: 0 0 0 20px; list-style: none; }
 .history-track { position: absolute; inset: 0 auto 0 0; width: 1px; background: #3d5a65; }
 .history-progress { display: block; height: 100%; transform-origin: top; background: #68e6ff; }
-.history-card { display: grid; grid-template-columns: minmax(90px,.25fr) 1fr; gap: 14px; padding: 20px; margin: 0 0 12px; border: 1px solid #93d1e029; border-radius: 16px; background: #c4eeff08; }
-.history-card > span, .history-card a { color: #94e8f7; }
-.history-card h3 { margin: 0; color: #edf7fa; }
-.history-card p { margin: .45em 0; }
+.history-year-card { display: grid; grid-template-columns: minmax(74px,.2fr) minmax(0,1fr); align-items: start; gap: 18px; padding: 20px; margin: 0 0 12px; border: 1px solid #93d1e029; border-radius: 16px; background: #c4eeff08; }
+.history-year-label { color: #94e8f7; font-size: 1.15rem; font-weight: 650; }
+.history-year-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 14px 22px; margin: 0; padding: 0; list-style: none; }
+.history-year-fact h3 { margin: 0; color: #edf7fa; font-size: 1rem; }
+.history-year-fact p { margin: .45em 0; }
+.history-year-fact a { color: #94e8f7; }
 @media (max-width: 899px) {
   .cinema-inner { grid-template-columns: minmax(0, 1fr); gap: 16px; }
   .cinema-bike { max-width: 480px; justify-self: center; width: 100%; padding: 4%; }
   .cinema-stage::after { background: linear-gradient(180deg,#081018e6, #0810188c 64%, #081018); }
-  .history-card { grid-template-columns: 1fr; gap: 8px; padding: 16px; }
+  .history-year-card { grid-template-columns: 1fr; gap: 10px; padding: 16px; }
+  .history-year-facts { grid-template-columns: 1fr; gap: 14px; }
 }
 </style>
