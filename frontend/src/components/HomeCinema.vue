@@ -1,22 +1,11 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { brand, clubNews } from '../brand'
-import { clubProfile } from '../clubProfile'
+import { clubHistoryItems } from '../clubHistory'
 
 const root = ref<HTMLElement | null>(null)
 const milestones = [
-  { date: '2013', title: '征途从校园出发', summary: clubProfile.brief, url: '' },
-  { date: '2014', title: '陕西省高校自行车联盟成立', summary: '由欧亚征途单车牵头，西安市多所高校自行车协会参与，联盟在西安欧亚学院成立。', url: '' },
-  { date: '2015', title: '首届陕西省高校自行车交流赛', summary: '赛事在西安欧亚学院举行，宣传材料记载参赛人数 600 余人。', url: '' },
-  { date: '2016', title: '承办骑闯天路西安挑战赛', summary: '依托西安欧亚学院举办赛事，并成立欧亚征途车队，开始参加专业自行车赛事。', url: '' },
-  { date: '2017', title: '骑沪南下，骑行约 1500 公里', summary: '车队从欧亚校园出发，骑行前往上海同济大学交流。', url: '' },
-  { date: '2018', title: '获授高校自行车训练基地', summary: '中国大学生体育协会自行车分会授予西安欧亚学院和西安交通大学自行车训练基地。', url: '' },
-  { date: '2019', title: '一带一路 · 横贯欧亚', summary: '开展“逐梦敦煌”丝路高校联动骑行活动。', url: '' },
-  { date: '2021', title: '参与第十四届全运会自行车项目执裁', summary: '14 名欧亚师生和校友参与小轮车、公路自行车、山地自行车项目执裁。', url: '' },
-  { date: '2021', title: '中国大学生室内自行车云上挑战赛', summary: '征途成员获男子 3 公里计时赛亚军。', url: '' },
-  { date: '2025', title: '全国大学生自行车锦标赛', summary: '征途成员李雅泽获场地 400 米淘汰赛亚军。', url: '' },
-  { date: '2026', title: '国际大学生自行车赛事两项季军', summary: '征途成员李雅泽获混合团体接力计时赛、女子团体冲刺赛第三名。', url: '' },
-  { date: '2026', title: '全国大学生自行车锦标赛', summary: '王晴天、刘书豪、方子睿获田径场男子团体竞速第三名。', url: '' },
+  ...clubHistoryItems.map(item => ({ date: item.year, title: item.title, summary: item.summary, url: '' })),
   ...[...clubNews].reverse(),
 ]
 
@@ -137,7 +126,7 @@ onBeforeUnmount(() => {
         <header><p class="cinema-label">ZHENGTU / MILESTONES</p><h2 id="history-title">一路骑来。</h2></header>
         <ol class="history-list">
           <li class="history-track" aria-hidden="true"><i class="history-progress"></i></li>
-          <li v-for="item in milestones" :key="item.date" class="history-card">
+          <li v-for="item in milestones" :key="`${item.date}-${item.title}`" class="history-card">
             <span>{{ item.date }}</span>
             <div><h3>{{ item.title }}</h3><p>{{ item.summary }}</p>
               <a v-if="item.url" :href="item.url" target="_blank" rel="noopener noreferrer">阅读学校报道 ↗</a>
