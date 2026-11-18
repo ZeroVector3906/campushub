@@ -26,7 +26,34 @@ async function show(component:any,props:Record<string,unknown>={},path='/'){cons
 function button(text:string){const item=wrapper!.findAll('button').find(b=>b.text()===text);expect(item,`按钮 ${text} 应存在`).toBeTruthy();return item!}
 describe('真实 Vue 组件交互（模拟 DOM，不是真实浏览器）',()=>{
  it('首页解释两类权益责任并连接对应注册选择',async()=>{state.user=null;await show(Home);expect(wrapper!.text()).toContain('西安欧亚学院征途单车俱乐部&社团');const section=wrapper!.find('.member-comparison');expect(section.text()).toContain('体育课程考核中二选一');expect(section.text()).toContain('课程部、活动部、宣传部');expect(section.text()).toContain('不得擅自使用室内任何物品及设施');expect(section.findAll('a').map(a=>a.attributes('href'))).toEqual(['/login?join=CLUB','/login?join=SOCIETY'])})
- it('只在确认游客状态时显示招新宣传，登录后隐藏并在退出后恢复',async()=>{state.user=null;state.ready=false;state.error='';await show(Home);expect(wrapper!.find('.home-cinema').exists()).toBe(true);expect(wrapper!.find('.zt-actions .zt-primary').exists()).toBe(false);expect(wrapper!.find('.member-comparison').exists()).toBe(false);expect(wrapper!.find('.zt-join-banner').exists()).toBe(false);state.ready=true;await nextTick();expect(wrapper!.find('.zt-actions .zt-primary').text()).toContain('申请加入');expect(wrapper!.find('.member-comparison').exists()).toBe(true);expect(wrapper!.find('.zt-join-banner').exists()).toBe(true);state.user={id:3,username:'member',name:'成员',email:'member@test',studentNo:'1',department:'学院',bio:'',role:'STUDENT',enabled:true,createdAt:new Date().toISOString()};await nextTick();expect(wrapper!.find('.home-cinema').exists()).toBe(false);expect(wrapper!.find('.zt-actions .zt-primary').exists()).toBe(false);expect(wrapper!.find('.member-comparison').exists()).toBe(false);expect(wrapper!.find('.zt-join-banner').exists()).toBe(false);expect(wrapper!.find('.zt-news').exists()).toBe(true);expect(wrapper!.text()).toContain('查看骑行活动');state.user=null;await nextTick();expect(wrapper!.find('.home-cinema').exists()).toBe(true);expect(wrapper!.find('.zt-actions .zt-primary').exists()).toBe(true);expect(wrapper!.find('.member-comparison').exists()).toBe(true);expect(wrapper!.find('.zt-join-banner').exists()).toBe(true)})
+ it('确认访客后显示品牌首屏，成员刷新不闪现招新内容，退出后恢复', async () => {
+   state.user = null
+   state.ready = false
+   state.error = ''
+   await show(Home)
+   expect(wrapper!.find('.home-cinema').exists()).toBe(false)
+   expect(wrapper!.find('.member-comparison').exists()).toBe(false)
+   expect(wrapper!.find('.zt-join-banner').exists()).toBe(false)
+   state.ready = true
+   await nextTick()
+   expect(wrapper!.find('.zt-actions .zt-primary').text()).toContain('申请加入')
+   expect(wrapper!.find('.member-comparison').exists()).toBe(true)
+   expect(wrapper!.find('.zt-join-banner').exists()).toBe(true)
+   state.user = {id:3, username:'member', name:'成员', email:'member@test', studentNo:'1', department:'学院', bio:'', role:'STUDENT', enabled:true, createdAt:new Date().toISOString()}
+   await nextTick()
+   expect(wrapper!.find('.home-cinema').exists()).toBe(false)
+   expect(wrapper!.find('.zt-actions .zt-primary').exists()).toBe(false)
+   expect(wrapper!.find('.member-comparison').exists()).toBe(false)
+   expect(wrapper!.find('.zt-join-banner').exists()).toBe(false)
+   expect(wrapper!.find('.zt-news').exists()).toBe(true)
+   expect(wrapper!.text()).toContain('查看骑行活动')
+   state.user = null
+   await nextTick()
+   expect(wrapper!.find('.home-cinema').exists()).toBe(true)
+   expect(wrapper!.find('.zt-actions .zt-primary').exists()).toBe(true)
+   expect(wrapper!.find('.member-comparison').exists()).toBe(true)
+   expect(wrapper!.find('.zt-join-banner').exists()).toBe(true)
+ })
  it('首页按按钮和方向键换景，全部年份和资料仍可浏览',async()=>{
    state.user=null;state.ready=true;state.error='';await show(Home)
    const choices=wrapper!.findAll('.stage-choice')

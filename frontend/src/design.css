@@ -30,24 +30,86 @@ body{font-size:15px;line-height:1.5;letter-spacing:-.02em;-webkit-font-smoothing
 .native-status-select{height:34px;border:1px solid #dcdfe6;border-radius:8px;padding:0 10px;background:#fff;color:#303133;font:inherit;font-size:14px;max-width:100%}.native-status-select:focus{outline:2px solid #0071e345;outline-offset:1px}
 
 
-/* The public landing gets a floating navigation bar. Business pages keep the standard shell. */
-.site-shell--cinematic{--home-header-space:82px;background:#0a0a0b}
-.site-shell--cinematic .site-header{padding:14px clamp(12px,5.5vw,88px) 2px;border:0;background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
-.site-shell--cinematic:not(:has(.connection-status)) .site-header{margin-bottom:calc(-1 * var(--home-header-space))}
-.site-shell--cinematic .global-nav{position:relative;height:66px;max-width:1510px;border:1px solid #ffffff28;border-radius:9px;background:#0d0d0eea;color:#fff;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-.site-shell--cinematic .site-brand,.site-shell--cinematic .nav-icon,.site-shell--cinematic .desktop-nav :is(a,button){color:#f5eeeb}
-.site-shell--cinematic .site-brand small{color:#cbc0bb}
-.site-shell--cinematic .desktop-nav :is(a,button):hover,.site-shell--cinematic .desktop-nav .current,.site-shell--cinematic .nav-icon:hover{color:#ff9e8e}
-.site-shell--cinematic .nav-login{color:#18100e;background:#ff715c;border-radius:5px}
-.site-shell--cinematic .nav-login:hover{background:#ffa093}
-.site-shell--cinematic .site-context{display:none}
-.site-shell--cinematic .nav-backdrop{top:var(--home-header-space)}
-.site-shell--cinematic .connection-status{background:#211a1a;color:#f4e7e3}
-.site-shell--cinematic .wake-link{color:#ffb4a6}
-.site-shell--cinematic :is(.service-menu,.site-search,.mobile-navigation){top:calc(100% + 4px);left:clamp(12px,5.5vw,88px);right:clamp(12px,5.5vw,88px);border-radius:9px}
-.site-shell--cinematic .zt-home{background:#f5f5f7}
-@media(max-width:670px){
-  .site-shell--cinematic{--home-header-space:78px}
-  .site-shell--cinematic .global-nav{height:62px;padding-inline:12px;gap:10px}
-  .site-shell--cinematic .global-actions{gap:4px}
+:is(.site-shell--cinematic,.site-shell--home-pending) {
+  --home-header-space: 78px;
+  --landing-ink: #211b2a;
+  --landing-copper: #97422c;
+  background: #0a0912;
+}
+:is(.site-shell--cinematic,.site-shell--home-pending) .site-header {
+  padding: 12px clamp(12px,5.4vw,100px) 2px;
+  border: 0; background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none;
+}
+.site-shell--cinematic:not(:has(.connection-status)) .site-header { margin-bottom: calc(-1 * var(--home-header-space)); }
+:is(.site-shell--cinematic,.site-shell--home-pending) .global-nav {
+  position: relative; height: 64px; max-width: 1600px; padding-inline: clamp(15px,2vw,30px);
+  border: 1px solid #d3c4ee38; border-radius: 20px;
+  background: linear-gradient(110deg,#12111deb,#151527ed 78%,#222034e8);
+  color: #fff5ec; box-shadow: 0 6px 25px #05040e38;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+:is(.site-shell--cinematic,.site-shell--home-pending) :is(.site-brand,.nav-icon,.desktop-nav a,.desktop-nav button) { color: #f4edf4; }
+:is(.site-shell--cinematic,.site-shell--home-pending) .site-brand > svg { color: #ffae83; }
+:is(.site-shell--cinematic,.site-shell--home-pending) .site-brand small { color: #c7bed3; }
+:is(.site-shell--cinematic,.site-shell--home-pending) .desktop-nav :is(a,button) { font-size: 13px; }
+.site-shell--cinematic .desktop-nav :is(a,button):hover,
+.site-shell--cinematic .desktop-nav .current, .site-shell--cinematic .nav-icon:hover { color: #ffac7f; }
+:is(.site-shell--cinematic,.site-shell--home-pending) .nav-login { color: #ffe6d2; border: 1px solid #d98e736b; background: #52323a; border-radius: 24px; padding: 8px 16px; }
+.site-shell--cinematic .nav-login:hover { color: #20111b; background: #ffab7d; }
+:is(.site-shell--cinematic,.site-shell--home-pending) .site-context { display: none; }
+.site-shell--home-pending { background: radial-gradient(ellipse at 72% 43%,#302755,transparent 60%),#0b0b17; }
+.site-shell--home-pending main { min-height: calc(100svh - var(--home-header-space)); }
+.site-shell--home-pending .connection-status { color: #ded4e8; background: #151324; }
+.site-shell--home-pending .wake-link { color: #ffb38e; }
+.site-shell--home-pending .zt-home { background: linear-gradient(#171321 0 33svh,#f8f5f1 65svh); }
+.site-shell--home-pending .zt-stat-grid :is(b,small,span) { color: #f4e6ec; }
+.site-shell--cinematic .nav-backdrop { top: var(--home-header-space); }
+.site-shell--cinematic :is(.service-menu,.site-search,.mobile-navigation) {
+  top: calc(100% + 4px); left: clamp(12px,5.4vw,100px); right: clamp(12px,5.4vw,100px);
+  max-height: calc(100dvh - var(--home-header-space) - 12px); overflow-y: auto; border-radius: 16px;
+}
+.site-shell--cinematic .zt-home { background: #f8f5f1; color: var(--landing-ink); }
+.site-shell--cinematic .zt-stat-grid {
+  max-width: none; width: 100%; margin: 0 auto; padding: clamp(30px,5vw,66px) max(22px,5.4vw);
+  background: #17131c; border-top: 1px solid #c2a1bb36;
+}
+.site-shell--cinematic .zt-stat-grid > div { border-color: #c7b4ca3d; }
+.site-shell--cinematic .zt-stat-grid b { color: #fff2e8; }
+.site-shell--cinematic .zt-stat-grid :is(small,span) { color: #d5bcc1; }
+.site-shell--cinematic .zt-story {
+  margin-top: clamp(38px,6vw,85px); background: linear-gradient(125deg,#201b2a,#342036);
+  border-radius: 15px;
+}
+.site-shell--cinematic .story-copy .text-link, .site-shell--cinematic .story-copy .eyebrow { color: #ffb38b; }
+.site-shell--cinematic .story-copy .zt-values { color: #eddbd4; }
+.site-shell--cinematic .home-section > .section-heading { border-top: 1px solid #59415533; padding-top: 25px; }
+.site-shell--cinematic .home-section .eyebrow,
+.site-shell--cinematic .home-section .text-link, .site-shell--cinematic .zt-services > a > span { color: var(--landing-copper); }
+.site-shell--cinematic .zt-home .section-heading h2 { letter-spacing: -.045em; }
+.site-shell--cinematic .membership-choice, .site-shell--cinematic .zt-empty-ride,
+.site-shell--cinematic .zt-news-card { border-radius: 14px; }
+.site-shell--cinematic .club-choice { background: linear-gradient(125deg,#211c2a,#362a3a); }
+.site-shell--cinematic .choice-facts li::before { background: #dc805d; }
+.site-shell--cinematic .membership-choice .zt-primary,
+.site-shell--cinematic .zt-join-banner .zt-primary { color: #281419; background: #ffa16e; }
+.site-shell--cinematic .zt-services { gap: 0; border-top: 1px solid #64455738; }
+.site-shell--cinematic .zt-services > a {
+  padding-inline: clamp(18px,2.3vw,36px); border: 0; border-bottom: 1px solid #64455738; border-radius: 0; background: transparent;
+}
+.site-shell--cinematic .zt-services > a > svg { color: var(--landing-copper); }
+.site-shell--cinematic .zt-services > a:hover { background: #fffaf5; }
+.site-shell--cinematic .zt-news-number { color: #974c3a; }
+.site-shell--cinematic .zt-join-banner { color: #fcf3ef; background: radial-gradient(ellipse at 55% 125%,#643750,transparent 62%),#161221; }
+.site-shell--cinematic .zt-join-banner :is(h2,h2 span) { color: #fff0e4; }
+.site-shell--cinematic .zt-join-banner :is(.eyebrow,p) { color: #dfc5ce; }
+@media (max-width: 900px) {
+  :is(.site-shell--cinematic,.site-shell--home-pending) { --home-header-space: 70px; }
+  :is(.site-shell--cinematic,.site-shell--home-pending) .global-nav { height: 56px; padding-inline: 13px; gap: 9px; border-radius: 17px; }
+  :is(.site-shell--cinematic,.site-shell--home-pending) .global-actions { gap: 4px; }
+  :is(.site-shell--cinematic,.site-shell--home-pending) .nav-login { padding-inline: 11px; }
+}
+@media (max-width: 600px) {
+  .site-shell--cinematic .zt-services { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .site-shell--cinematic .zt-services > a { min-width: 0; padding: 20px 12px; }
+  .site-shell--cinematic .zt-services h3 { font-size: 19px; }
 }
