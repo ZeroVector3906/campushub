@@ -7,6 +7,7 @@ import {run,connectionEvents,serviceWakeUrl} from './api'
 import Icon from './components/Icon.vue'
 
 const route=useRoute(),router=useRouter(),wakeUrl=serviceWakeUrl()
+const cinemaHome=computed(()=>route.path==='/'&&!state.user)
 const mobile=ref(false),services=ref(false),searchOpen=ref(false),notifications=ref(false),search=ref('')
 const searchInput=ref<HTMLInputElement>()
 const serviceLinks=[{path:'/rooms',label:'骑行室使用',description:'为下一次出发，留一处空间。',icon:'bike'},{path:'/equipment',label:'器材借用',description:'共享装备，让热爱轻装上路。',icon:'package'},{path:'/repairs',label:'在线报修',description:'提交问题，随时了解维修进度。',icon:'wrench'}]
@@ -26,7 +27,7 @@ onMounted(()=>{connectionEvents.addEventListener('unavailable',reconnectAfterFai
 </script>
 
 <template>
- <div class="site-shell" @keydown.esc="closePanels">
+ <div class="site-shell" :class="{'site-shell--cinematic':cinemaHome}" @keydown.esc="closePanels">
   <a class="skip-link" href="#main-content" @click.prevent="focusMain">跳至主要内容</a>
   <header class="site-header">
    <div class="global-nav">

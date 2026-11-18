@@ -28,3 +28,26 @@ body{font-size:15px;line-height:1.5;letter-spacing:-.02em;-webkit-font-smoothing
 .wake-link{flex-shrink:0;color:#0071e3;text-decoration:underline;white-space:nowrap}@media(max-width:640px){.connection-status{flex-wrap:wrap;justify-content:flex-start}.connection-status>span{flex-basis:100%}}
 
 .native-status-select{height:34px;border:1px solid #dcdfe6;border-radius:8px;padding:0 10px;background:#fff;color:#303133;font:inherit;font-size:14px;max-width:100%}.native-status-select:focus{outline:2px solid #0071e345;outline-offset:1px}
+
+
+/* The public landing gets a floating navigation bar. Business pages keep the standard shell. */
+.site-shell--cinematic{--home-header-space:82px;background:#0a0a0b}
+.site-shell--cinematic .site-header{padding:14px clamp(12px,5.5vw,88px) 2px;border:0;background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+.site-shell--cinematic:not(:has(.connection-status)) .site-header{margin-bottom:calc(-1 * var(--home-header-space))}
+.site-shell--cinematic .global-nav{position:relative;height:66px;max-width:1510px;border:1px solid #ffffff28;border-radius:9px;background:#0d0d0eea;color:#fff;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.site-shell--cinematic .site-brand,.site-shell--cinematic .nav-icon,.site-shell--cinematic .desktop-nav :is(a,button){color:#f5eeeb}
+.site-shell--cinematic .site-brand small{color:#cbc0bb}
+.site-shell--cinematic .desktop-nav :is(a,button):hover,.site-shell--cinematic .desktop-nav .current,.site-shell--cinematic .nav-icon:hover{color:#ff9e8e}
+.site-shell--cinematic .nav-login{color:#18100e;background:#ff715c;border-radius:5px}
+.site-shell--cinematic .nav-login:hover{background:#ffa093}
+.site-shell--cinematic .site-context{display:none}
+.site-shell--cinematic .nav-backdrop{top:var(--home-header-space)}
+.site-shell--cinematic .connection-status{background:#211a1a;color:#f4e7e3}
+.site-shell--cinematic .wake-link{color:#ffb4a6}
+.site-shell--cinematic :is(.service-menu,.site-search,.mobile-navigation){top:calc(100% + 4px);left:clamp(12px,5.5vw,88px);right:clamp(12px,5.5vw,88px);border-radius:9px}
+.site-shell--cinematic .zt-home{background:#f5f5f7}
+@media(max-width:670px){
+  .site-shell--cinematic{--home-header-space:78px}
+  .site-shell--cinematic .global-nav{height:62px;padding-inline:12px;gap:10px}
+  .site-shell--cinematic .global-actions{gap:4px}
+}

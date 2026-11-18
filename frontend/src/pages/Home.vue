@@ -17,8 +17,9 @@ const services=[{path:'/rooms',icon:'bike',title:'骑行室使用',text:'存取�
 
 <template>
  <div class="page-content zt-home">
-  <HomeCinema v-if="showGuestRecruitment">
-    <router-link to="/clubs" class="zt-primary">了解征途 · 申请加入<Icon name="right" :size="17"/></router-link>
+  <HomeCinema v-if="!state.user">
+    <router-link v-if="showGuestRecruitment" to="/clubs" class="zt-primary">了解征途 · 申请加入<Icon name="right" :size="17"/></router-link>
+    <router-link v-else to="/clubs" class="zt-secondary">了解征途<Icon name="right" :size="17"/></router-link>
     <router-link to="/activities" class="zt-secondary">查看骑行活动<Icon name="right" :size="17"/></router-link>
   </HomeCinema>
   <section v-else class="home-section member-home-heading" aria-labelledby="member-home-title">
