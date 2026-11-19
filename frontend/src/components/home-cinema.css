@@ -159,11 +159,14 @@
 @keyframes film-flash { from { transform: translateX(-80%); } to { transform: translateX(80%); } }
 
 .cinema-history {
-  position: relative; background: radial-gradient(ellipse at 5% 3%, #1b4d407a, transparent 32%), #0a1b17;
+  position: relative;
+  --cinema-paper: #f4fcf7;
+  --cinema-secondary: #d1e6dc;
+  background: radial-gradient(ellipse at 5% 3%, #427b675c, transparent 45%), #24483f;
   padding: clamp(56px, 7.5vw, 112px) var(--cinema-gutter);
 }
 .history-inner { max-width: 1410px; margin: auto; }
-.history-header { padding-bottom: clamp(24px, 4vw, 56px); border-bottom: 1px solid #bce3cd3b; }
+.history-header { padding-bottom: clamp(24px, 4vw, 56px); border-bottom: 1px solid #bce3cd59; }
 .history-header .stage-kicker { color: var(--landing-mint); letter-spacing: .14em; font: 600 12px/1.5 ui-monospace, monospace; }
 .history-header h2 { font-size: clamp(48px, 6.4vw, 100px); font-weight: 800; line-height: 1.12; letter-spacing: -.07em; margin: 14px 0 12px; color: var(--cinema-paper); scroll-margin-top: calc(var(--home-header-space,78px) + 16px); }
 .history-header h2 span { color: var(--eurasia-green); }
@@ -174,12 +177,12 @@
 .history-index-label span { color: var(--eurasia-green); }
 .history-current { display: block; color: var(--eurasia-green); font: 600 clamp(65px, 8.6vw, 140px)/1.1 "Arial Narrow", Arial, sans-serif; letter-spacing: -.07em; margin: 5px 0 20px; }
 .history-buttons { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; max-width: 278px; }
-.history-buttons button { min-height: 43px; border: 1px solid #8dbcaa52; border-radius: 5px; background: #102722; color: var(--cinema-secondary); font-variant-numeric: tabular-nums; font-weight: 600; transition: background .2s, color .2s; }
+.history-buttons button { min-height: 43px; border: 1px solid #a4cfbc80; border-radius: 5px; background: #30584d; color: var(--cinema-secondary); font-variant-numeric: tabular-nums; font-weight: 600; transition: background .2s, color .2s; }
 .history-buttons button[aria-current=true] { border-color: var(--eurasia-green); background: var(--eurasia-green); color: var(--landing-ink); }
 .history-buttons button:hover { border-color: var(--landing-mint); }
 .history-list, .history-year-facts { list-style: none; margin: 0; padding: 0; }
-.history-year-card { scroll-margin-top: var(--history-stop,100px); padding: 25px clamp(16px,2.4vw,34px); border-top: 1px solid #9fc5b33d; border-left: 2px solid transparent; }
-.history-year-card--active { border-left-color: var(--eurasia-green); background: linear-gradient(105deg,#3ab3a526,transparent 83%); }
+.history-year-card { scroll-margin-top: var(--history-stop,100px); padding: 25px clamp(16px,2.4vw,34px); border-top: 1px solid #acd7c252; border-left: 2px solid transparent; }
+.history-year-card--active { border-left-color: var(--eurasia-green); background: linear-gradient(105deg,#76cfb42e,transparent 83%); }
 .history-year-label { margin: 0 0 8px; color: var(--landing-mint); font: 650 15px/1.4 ui-monospace, monospace; letter-spacing: .09em; }
 .history-year-facts { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,250px),1fr)); gap: 19px 25px; }
 .history-year-fact h4 { color: var(--cinema-paper); font-size: clamp(17px,1.55vw,24px); line-height: 1.5; }
@@ -215,7 +218,7 @@
   .stage-explore { min-width: 44px; justify-content: flex-end; }
   .stage-explore > span:first-child { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .history-layout { display: block; padding-top: 0; }
-  .history-index { top: var(--home-header-space,70px); z-index: 4; padding-block: 7px; background: #0d211bf7; border-bottom: 1px solid #a6ccba42; }
+  .history-index { top: var(--home-header-space,70px); z-index: 4; padding-block: 7px; background: #24483ffa; border-bottom: 1px solid #a6ccba70; }
   .history-current, .history-index-label { display: none; }
   .history-buttons { max-width: none; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 4px; }
   .history-buttons button { min-height: 40px; font-size: 13px; }
