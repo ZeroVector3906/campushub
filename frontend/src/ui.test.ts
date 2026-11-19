@@ -69,6 +69,29 @@ describe('真实 Vue 组件交互（模拟 DOM，不是真实浏览器）',()=>{
    await wrapper!.find('.stage-explore').trigger('click')
    expect(document.activeElement).toBe(wrapper!.find('#history-title').element)
  })
+ it('首屏影像左右滑动循环换景，纵向、短触和多指手势保留原场景', async () => {
+   state.user = null; state.ready = true; state.error = ''
+   await show(Home)
+   const frame = wrapper!.get('.stage-scene-frame')
+   const active = () => wrapper!.get('.stage-choice[aria-pressed="true"]').text()
+   const touch = (x: number, y: number, identifier = 1) => ({ clientX: x, clientY: y, identifier })
+   const start = touch(150, 120)
+   const endAt = (x: number, y: number) => frame.trigger('touchend', { touches: [], changedTouches: [touch(x, y)] })
+   for (const [x, y, expected] of [[65, 122, '团队合照'], [235, 115, '公路单车'], [235, 115, '十周年现场'],
+     [156, 42, '十周年现场'], [168, 122, '十周年现场']] as const) {
+     await frame.trigger('touchstart', { touches: [start] })
+     await endAt(x, y)
+     expect(active()).toBe(expected)
+   }
+   await frame.trigger('touchstart', { touches: [start, touch(220, 120, 2)] })
+   await endAt(65, 120)
+   await frame.trigger('touchstart', { touches: [touch(4, 120)] })
+   await endAt(140, 120)
+   await frame.trigger('touchstart', { touches: [start] })
+   await frame.trigger('touchcancel')
+   await endAt(65, 120)
+   expect(active()).toBe('十周年现场')
+ })
  it('登录后隐藏游客招新提示但保留俱乐部申请表单',async()=>{await show(Clubs);expect(wrapper!.findAll('.tiny-pill')).toHaveLength(0);expect(wrapper!.find('.page-heading p').text()).toBe('查看俱乐部资料与入社申请。');await wrapper!.find('.club-card').trigger('click');await flushPromises();expect(wrapper!.text()).toContain('选择加入');expect(button('提交加入申请').exists()).toBe(true)})
  it('成员中心移除我的俱乐部卡片和标签，保留活动借还及身份状态',async()=>{await show(Center,{},'/center?tab=clubs');expect(wrapper!.text()).not.toContain('我的俱乐部');expect(wrapper!.findAll('.center-stats .stat-card')).toHaveLength(3);expect(wrapper!.text()).toContain('活动与签到');expect(wrapper!.text()).toContain('器材借还');expect(wrapper!.text()).toContain('加入身份：俱乐部')})
  it('从社团入口注册会提交社团意向和联系资料',async()=>{await show(Login,{},'/login?join=SOCIETY');expect(wrapper!.text()).toContain('仅可在北三骑行室存取个人车辆');await wrapper!.find('input[placeholder="请输入用户名"]').setValue('society_test');await wrapper!.find('input[placeholder="你的姓名"]').setValue('申请同学');await wrapper!.find('input[placeholder="你的学号"]').setValue('20250001');await wrapper!.find('input[placeholder="用于联系的邮箱"]').setValue('society@example.test');await wrapper!.find('input[placeholder="请填写所在学院或院系"]').setValue('信息工程学院');await wrapper!.find('input[placeholder="手机 / 微信 / QQ"]').setValue('微信：society');await wrapper!.find('input[placeholder="例如：2025级"]').setValue('2025级');await wrapper!.find('input[placeholder="请输入至少 8 位密码"]').setValue('SocietyPassword2026!');await wrapper!.find('form').trigger('submit');await flushPromises();expect(api).toHaveBeenCalledWith('/auth/register','POST',expect.objectContaining({joinType:'SOCIETY',contact:'微信：society',grade:'2025级',clubDivision:''}))})

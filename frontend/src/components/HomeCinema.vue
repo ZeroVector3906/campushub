@@ -38,6 +38,7 @@ let pointerY = 0
 let sceneOnscreen = true
 let scrollChapter = 0
 let scrollYAtLastFrame: number | undefined
+let swipeOrigin: Touch | undefined
 let yearCards: HTMLElement[] = []
 let header: HTMLElement | null = null
 let motion: MediaQueryList | undefined
@@ -53,6 +54,23 @@ function selectScene(index: number) {
 function imageReady(index: number) {
   readyImages.add(index)
   if (index === sceneIndex.value) projectedScene.value = index
+}
+function beginSwipe(event: TouchEvent) {
+  const touch = event.touches[0]
+  // Leave edge swipes to browser navigation and two-finger gestures to zoom.
+  swipeOrigin = event.touches.length === 1 && touch && touch.clientX >= 24 && touch.clientX <= window.innerWidth - 24
+    ? touch : undefined
+}
+function finishSwipe(event: TouchEvent) {
+  const start = swipeOrigin
+  swipeOrigin = undefined
+  const end = event.changedTouches[0]
+  if (!start || !end || end.identifier !== start.identifier || event.touches.length) return
+  const dx = end.clientX - start.clientX
+  const dy = end.clientY - start.clientY
+  if (Math.abs(dx) >= 44 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+    selectScene(sceneIndex.value + (dx < 0 ? 1 : -1))
+  }
 }
 function sceneKey(event: KeyboardEvent, index: number) {
   const next = event.key === 'ArrowRight' ? index + 1 : event.key === 'ArrowLeft' ? index - 1
@@ -177,13 +195,14 @@ onBeforeUnmount(() => cleanup?.())
             <p class="stage-kicker"><span aria-hidden="true"></span>{{ brand.fullName }}</p>
             <h1 id="home-title" :aria-label="brand.motto">
               <span class="title-line" aria-hidden="true"><b>把热爱，</b></span>
-              <span class="title-line title-line--warm" aria-hidden="true"><b>骑成征途。</b></span>
+              <span class="title-line title-line--accent" aria-hidden="true"><b>骑成征途。</b></span>
             </h1>
             <p class="stage-description">从西安欧亚学院出发。<br>一辆单车，一群伙伴，一段共同的征途。</p>
             <div class="zt-actions cinema-actions"><slot /></div>
           </div>
           <figure id="club-cinema-frame" class="stage-art" aria-label="征途影像">
-            <div class="stage-scene-frame">
+            <div class="stage-scene-frame" @touchstart.passive="beginSwipe" @touchend.passive="finishSwipe"
+              @touchcancel.passive="swipeOrigin = undefined">
               <div v-for="(scene,index) in scenes" :key="scene.image" class="stage-image"
                 :class="{'stage-image--bike':index===0,'stage-image--current':sceneIndex===index,'is-projected':projectedScene===index}"
                 :aria-hidden="projectedScene!==index">
@@ -201,6 +220,7 @@ onBeforeUnmount(() => cleanup?.())
               </div>
             </div>
             <figcaption class="stage-caption" aria-live="polite">
+              <small class="swipe-hint" aria-hidden="true">左右滑动换景</small>
               <span>{{ sceneNumber(projectedScene) }} / 0{{ scenes.length }}</span>
               {{ scenes[projectedScene]?.detail }} · {{ scenes[projectedScene]?.label }}
             </figcaption>
